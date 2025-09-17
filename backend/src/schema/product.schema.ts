@@ -39,3 +39,7 @@ export type CreateProductInput = z.infer<typeof createProductSchema>
 export const deleteProductSchema = z.object({
     id: z.string().min(1, "Id nao passado nos params")
 })
+
+export const updateProductSchema = createProductSchema.partial();
+
+export type UpdateProducInput = z.infer<typeof updateProductSchema>

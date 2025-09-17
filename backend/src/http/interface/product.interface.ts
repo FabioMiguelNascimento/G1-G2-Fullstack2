@@ -7,5 +7,5 @@ export default interface IProduct {
     delete(id: string): Promise<void>
     findByid(id: string): Promise<Product | null>
     getAll(): Promise<Product[] | null>
-    getById(id: Id): Promise<Product | null>
+    getById(id: string): Promise<Product | null>
 }

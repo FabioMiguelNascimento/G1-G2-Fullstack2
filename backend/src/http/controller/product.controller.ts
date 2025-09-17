@@ -1,8 +1,8 @@
+import { NotFoundError } from "@/error/httpErros.js";
+import { CreateProductInput, UpdateProducInput } from "@/schema/product.schema.js";
 import { NextFunction, Request, Response } from "express";
 import ProductRepository from "../repository/product.repo.js";
-import { CreateProductInput } from "@/schema/product.schema.js";
 import ProductResponse from "../views/product.view.js";
-import { NotFoundError } from "@/error/httpErros.js";
 
 export default class ProductController {
     private repo: ProductRepository;
@@ -11,6 +11,23 @@ export default class ProductController {
     constructor() {
         this.repo = new ProductRepository()
         this.view = new ProductResponse()
+    }
+
+    update = async (req:Request, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.validatedData;
+            const editedProduct: UpdateProducInput = req.validatedData;
+
+            const oldProduct = await this.repo.getById(id);
+
+            if(!oldProduct) throw new NotFoundError('Produto não encontrado com esse ID')
+
+            const newProductData = await this.repo.updateProduct(id, editedProduct);
+
+            res.status(200).json(newProductData);
+        } catch (error) {
+            
+        }
     }
 
     create = async (req: Request, res: Response, next: NextFunction) => {

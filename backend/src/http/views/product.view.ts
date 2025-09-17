@@ -2,7 +2,7 @@ import { CreateProductInput } from "@/schema/product.schema.js"
 import { Product } from "@prisma/client"
 
 export default class ProductResponse {
-    create(data: CreateProductInput) {
+    create(data: Product) {
         return { code: 201, message: "Produto criado com sucesso", data: data}
     }
 

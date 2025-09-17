@@ -1,8 +1,8 @@
-import { CreateProductInput } from "@/schema/product.schema.js";
-import { Product } from "@prisma/client";
-import IProduct from "../interface/product.interface.js";
-import prisma from "db/prisma.js";
+import { CreateProductInput, UpdateProducInput } from "@/schema/product.schema.js";
 import { Id } from "@/schema/utils/id.schema.js";
+import { Product } from "@prisma/client";
+import prisma from "db/prisma.js";
+import IProduct from "../interface/product.interface.js";
 
 export default class ProductRepository implements IProduct {
     async create(data: CreateProductInput, userId: string): Promise<Product> {
@@ -33,7 +33,11 @@ export default class ProductRepository implements IProduct {
         return await prisma.product.findMany()
     }
 
-    async getById(id: Id): Promise<Product | null> {
-        return await prisma.product.findUnique({where: { id: id }})
+    async getById(id: string): Promise<Product | null> {
+        return await prisma.product.findUnique({where: {id : id}});
+    }
+
+    async updateProduct(id: string, data: UpdateProducInput): Promise<Product | null> {
+        return await prisma.product.update({where: {id: id}, data: data})
     }
 }
