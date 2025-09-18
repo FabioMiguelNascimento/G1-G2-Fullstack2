@@ -115,4 +115,60 @@ export default class CartRepository implements ICart {
 
         return this.calculateCartResponse(updatedCart);
     }
+
+    async removeProduct(productId: string, userId: string): Promise<CartResponse | null> {
+        const cart = await prisma.cart.findFirst({
+            where: {
+                user: {
+                    id: userId
+                }
+            }
+        });
+        if (!cart) return null;
+
+        const existing = await prisma.productInCart.findUnique({
+            where: {
+                productId_cartId: {
+                    productId: productId,
+                    cartId: cart.id
+                }
+            },
+            include: {
+                product: true
+            }
+        });
+
+        if (!existing) return null; // Produto não está no carrinho
+
+        // Calcula o novo total subtraindo o valor do produto removido
+        const removedValue = existing.product.price * existing.quantity;
+        const newTotal = parseFloat(cart.totalValue) - removedValue;
+
+        // Deleta o produto do carrinho
+        await prisma.productInCart.delete({
+            where: {
+                productId_cartId: {
+                    productId: productId,
+                    cartId: cart.id
+                }
+            }
+        });
+
+        // Atualiza o totalValue do carrinho
+        const updatedCart = await prisma.cart.update({
+            where: { id: cart.id },
+            data: {
+                totalValue: newTotal.toString()
+            },
+            include: {
+                product: {
+                    include: {
+                        product: true
+                    }
+                }
+            }
+        });
+
+        return this.calculateCartResponse(updatedCart);
+    }
 }
