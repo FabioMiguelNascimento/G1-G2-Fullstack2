@@ -5,24 +5,15 @@ import {
   NavigationMenuLink,
   NavigationMenuList
 } from "@/components/ui/navigation-menu"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { ChevronsUpDown, Heart, LogOut, Package, ShoppingCart, User } from "lucide-react"
 import { Link } from "react-router-dom"
-import { Avatar, AvatarFallback } from "./ui/avatar"
 import CartSheet from "./CartSheet"
+import { Avatar, AvatarFallback } from "./ui/avatar"
+import type UserType from "@/types/user.type"
 
-export default function Header() {
-  const user = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-  }
-  return (
-    <header className="sticky top-0 z-50 w-full bg-blue-500 shadow-md">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-        <Link to="/" className="text-2xl font-bold text-white hover:text-blue-200">
-          OsGuriShop
-        </Link>
-
-        <NavigationMenu>
+const desktopMenu = (user: UserType) => {
+  return <NavigationMenu>
           <NavigationMenuList className="flex items-center space-x-6">
 
             <NavigationMenuItem>
@@ -111,6 +102,24 @@ export default function Header() {
 
           </NavigationMenuList>
         </NavigationMenu>
+}
+
+export default function Header() {
+  const user = {
+    name: "John Doe",
+    email: "john.doe@example.com",
+  }
+
+  const isMobile = useIsMobile();
+  return (
+    <header className="sticky top-0 z-50 w-full bg-blue-500 shadow-md">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+        <Link to="/" className="text-2xl font-bold text-white hover:text-blue-200">
+          OsGuriShop
+        </Link>
+
+        {isMobile ? null : desktopMenu(user)}
+        
       </div>
     </header>
   )

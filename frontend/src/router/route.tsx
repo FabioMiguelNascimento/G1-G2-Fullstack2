@@ -4,6 +4,7 @@ import NotFound from "@/pages/NotFound";
 import Product from "@/pages/Product";
 import Cart from "@/pages/Cart";
 import Login from "@/pages/Login";
+import Profile from "@/pages/Profile";
 import { type RouteObject } from "react-router-dom";
 import ProductsLists from "@/pages/ProductsList";
 
@@ -35,6 +36,10 @@ const routesConfig: RouteObject[] = [
       {
         path: "login",
         element: <Login />
+      },
+      {
+        path: "account",
+        element: <Profile  />
       }
     ],
   },
