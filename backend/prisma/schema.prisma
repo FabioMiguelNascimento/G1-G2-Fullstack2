@@ -109,6 +109,8 @@ model ProductInCart {
   cart   Cart   @relation(fields: [cartId], references: [id])
   cartId String
 
+  quantity  Int @default(1)
+
   assignedAt DateTime @default(now())
   assignedBy String
 
