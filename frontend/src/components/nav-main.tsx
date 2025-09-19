@@ -25,7 +25,7 @@ export function NavMain({
   }[]
 }) {
   return (
-    <SidebarGroup className="mt-20">
+    <SidebarGroup className="">
       <SidebarMenu>
         {items.map((item) => (
             <SidebarMenuItem key={item.title}>
