@@ -1,6 +1,6 @@
 "use client";
 
-import { Star } from "lucide-react";
+import { Star, User } from "lucide-react";
 import * as React from "react";
 
 import { NavMain } from "@/components/nav-main";
@@ -23,8 +23,13 @@ const data = {
     },
     navMain: [
         {
+            title: "Meus dados",
+            url: "/account",
+            icon: User,
+        },
+        {
             title: "Favoritos",
-            url: "#",
+            url: "/account/favorites",
             icon: Star,
         },
     ],
@@ -32,7 +37,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     return (
-        <Sidebar collapsible="icon" {...props} className="mt-20">
+        <Sidebar collapsible="icon" {...props} className="pt-20">
             <SidebarHeader>
                 <SidebarTrigger className="-ml-1" />
             </SidebarHeader>
