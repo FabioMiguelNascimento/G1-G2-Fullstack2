@@ -15,17 +15,18 @@ import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 
-export default function Login() {
+export default function Register() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const { login } = useAuthContext()
+  const [name, setName ] = useState('')
+  const { register } = useAuthContext()
   const navigate = useNavigate()
 
-  const handleLogin = async (email: string, password: string) => {
-    const authedUser = await login({ email, password})
+  const handleRegister = async (email: string, password: string, name: string) => {
+    const result = await register({ email, password, name})
 
-    if(!authedUser) {
-      toast("Credenciais invalidas")
+    if(!result.user) {
+      toast(result.message)
       return
     }
 
@@ -36,15 +37,25 @@ export default function Login() {
     <div className="flex items-center justify-center h-full">
       <Card className="w-full max-w-md ">
         <CardHeader>
-          <CardTitle className="text-xl">Faça login na sua conta</CardTitle>
+          <CardTitle className="text-xl">Registre uma conta gratuitamente</CardTitle>
           <CardDescription>
-            Digite seu e-mail abaixo para acessar sua conta
+            Preencha o formulario para se cadastrar
           </CardDescription>
           <CardAction></CardAction>
         </CardHeader>
         <CardContent>
           <form>
             <div className="flex flex-col gap-6">
+              <div className="grid gap-2">
+                <Label htmlFor="email">Nome</Label>
+                <Input
+                  id="name"
+                  placeholder="John Doe"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -77,11 +88,11 @@ export default function Login() {
           </form>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <Button className="w-full" onClick={() => handleLogin(email, password)}>
-            Login
+          <Button className="w-full"  onClick={() => handleRegister(email, password, name)}>
+            Cadastrar
           </Button>
-          <Link to="/register" className="w-full text-sm underline">
-            Nao tem conta? Cadastre-se
+          <Link to="/login" className="w-full text-sm underline">
+            Ja tem conta? Faça Login
           </Link>
         </CardFooter>
       </Card>

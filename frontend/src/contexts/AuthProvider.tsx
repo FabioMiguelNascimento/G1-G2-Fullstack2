@@ -1,10 +1,11 @@
-import { login } from "@/services/auth.services";
+import { login, register } from "@/services/auth.services";
 import type { User } from "@/types/user.type";
 import { createContext, useState, type ReactNode } from "react";
 
 interface AuthContextType {
     user: User | null;
     login: (data: { email: string; password: string }) => Promise<User | null>;
+    register: (data: { email: string; password: string; name: string }) => Promise<{ user: User | null, message: string }>;
     logout: () => void;
 }
 
@@ -33,6 +34,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return authedUser;
     };
 
+    const registerHandler = async (data: { email: string; password: string; name: string }): Promise<{ user: User | null, message: string }> => {
+        return await register(data);
+    };
+
     const logoutHandler = () => {
         setUser(null);
         localStorage.removeItem('user');
@@ -41,6 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const value = {
         user,
         login: loginHandler,
+        register: registerHandler,
         logout: logoutHandler,
     };
 
