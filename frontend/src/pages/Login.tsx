@@ -10,11 +10,31 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import useAuthContext from "@/hooks/useAthContext"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { toast } from "sonner"
 
 export default function Login() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const { login } = useAuthContext()
+  const navigate = useNavigate()
+
+  const handleLogin = async (email: string, password: string) => {
+    const authedUser = await login({ email, password})
+
+    if(!authedUser) {
+      toast("Credenciais invalidas")
+      return
+    }
+
+    navigate('/')
+  }
+
   return (
-    <div className="flex items-center justify-center bg-gray-50">
-      <Card className="w-full max-w-md shadow-lg rounded-2xl">
+    <div className="flex items-center justify-center h-full">
+      <Card className="w-full max-w-md ">
         <CardHeader>
           <CardTitle className="text-xl">Faça login na sua conta</CardTitle>
           <CardDescription>
@@ -30,8 +50,10 @@ export default function Login() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="email@example.com"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className="grid gap-2">
@@ -44,13 +66,18 @@ export default function Login() {
                     Esqueceu sua senha?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input 
+                  id="password" 
+                  type="password" 
+                  required 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}/>
               </div>
             </div>
           </form>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <Button type="submit" className="w-full">
+          <Button className="w-full" onClick={() => handleLogin(email, password)}>
             Login
           </Button>
           <Button variant="outline" className="w-full">
