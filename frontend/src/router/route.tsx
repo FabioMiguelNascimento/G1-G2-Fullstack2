@@ -1,12 +1,13 @@
 import App from "@/App";
+import Cart from "@/pages/Cart";
 import Home from "@/pages/Home";
+import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 import Product from "@/pages/Product";
-import Cart from "@/pages/Cart";
-import Login from "@/pages/Login";
+import ProductsLists from "@/pages/ProductsList";
+import Register from "@/pages/Register";
 import Profile from "@/pages/Profile";
 import { type RouteObject } from "react-router-dom";
-import ProductsLists from "@/pages/ProductsList";
 
 const routesConfig: RouteObject[] = [
   {
@@ -40,6 +41,10 @@ const routesConfig: RouteObject[] = [
       {
         path: "account",
         element: <Profile  />
+      },
+      {
+        path: "register",
+        element: <Register />
       }
     ],
   },

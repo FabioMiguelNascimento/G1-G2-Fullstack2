@@ -4,11 +4,7 @@ import MobileMenu from "./mobileMenu";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Header() {
-    const user = {
-        name: "John Doe",
-        email: "john.doe@example.com",
-    };
-
+   
     const isMobile = useIsMobile();
 
     return (
@@ -21,9 +17,9 @@ export default function Header() {
                     OsGuriShop
                 </Link>
                 {isMobile ? (
-                    <MobileMenu user={user} />
+                    <MobileMenu />
                 ) : (
-                    <DesktopMenu user={user} />
+                    <DesktopMenu />
                 )}
             </div>
         </header>
