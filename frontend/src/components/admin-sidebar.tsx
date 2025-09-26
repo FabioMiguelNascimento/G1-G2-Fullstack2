@@ -1,28 +1,21 @@
-"use client"
-
 import {
+  Package,
   Tag,
-  User,
-  Package
+  User
 } from "lucide-react"
 import * as React from "react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import useAuthContext from "@/hooks/useAthContext"
 
 export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user } = useAuthContext()
   const data = {
-    user: user,
     navMain: [
       {
         title: "Produtos",
