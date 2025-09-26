@@ -60,7 +60,7 @@ const routesConfig: RouteObject[] = [
                 children: [
                   {
                     index: true,
-                    element: <Admin />
+                    // element: <Admin />
                   }
                 ]
               }
