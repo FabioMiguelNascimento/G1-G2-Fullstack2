@@ -15,21 +15,22 @@ import {
 } from "@/components/ui/sidebar"
 
 export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const base = '/admin'
   const data = {
     navMain: [
       {
         title: "Produtos",
-        url: "produtos",
+        url: `${base}/produtos`,
         icon: Package,
       },
       {
         title: "Usuários",
-        url: "users",
+        url: `${base}/users`,
         icon: User
       },
       {
         title: "Categorias",
-        url: "categorias",
+        url: `${base}/categorias`,
         icon: Tag
       }],
   }
