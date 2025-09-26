@@ -1,32 +1,16 @@
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
     NavigationMenu,
     NavigationMenuItem,
     NavigationMenuLink,
     NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import {
-    ChevronsUpDown,
-    Heart,
-    LogOut,
-    Package,
-    ShoppingCart,
-    User,
-} from "lucide-react";
 import { Link } from "react-router-dom";
 import CartSheet from "./CartSheet";
-import { Avatar, AvatarFallback } from "./ui/avatar";
 import UserDropdownMenu from "./UserDropdownMenu";
 
 export default function DesktopMenu () {
     return (
-        <NavigationMenu>
+        <NavigationMenu className="justify-end">
             <NavigationMenuList className="flex items-center space-x-6">
                 <NavigationMenuItem>
                     <NavigationMenuLink asChild>
