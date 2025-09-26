@@ -1,13 +1,15 @@
 import App from "@/App";
+import AdminLayout from "@/pages/Admin/AdminLayout";
 import Cart from "@/pages/Cart";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 import Product from "@/pages/Product";
 import ProductsLists from "@/pages/ProductsList";
-import Register from "@/pages/Register";
 import Profile from "@/pages/Profile";
+import Register from "@/pages/Register";
 import { type RouteObject } from "react-router-dom";
+import { AdminRoutes, AuthenticatedRoutes } from "./ProtectedRoutes";
 
 const routesConfig: RouteObject[] = [
   {
@@ -38,13 +40,33 @@ const routesConfig: RouteObject[] = [
         path: "login",
         element: <Login />
       },
-      {
-        path: "account",
-        element: <Profile  />
-      },
-      {
+       {
         path: "register",
         element: <Register />
+      },
+      {
+        element: <AuthenticatedRoutes />,
+        children: [
+          {
+            path: "profile",
+            element: <Profile />
+          },
+          {
+            element: <AdminRoutes />,
+            children: [
+              {
+                path: "admin",
+                element: <AdminLayout />,
+                children: [
+                  {
+                    index: true,
+                    element: <Admin />
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     ],
   },

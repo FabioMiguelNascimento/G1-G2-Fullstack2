@@ -1,5 +1,6 @@
 import type { User } from "@/types/user.type";
 import api from "@/utils/api";
+import { no } from "zod/v4/locales";
 
 interface LoginRequest {
     password:  string,
@@ -55,3 +56,22 @@ export const register = async ( data : RegisterRequest ): Promise<{ user: User |
         }
     }
 };
+
+export const profile = async () => {
+    try {
+        const response = await api.get('/user/profile')
+
+         if (response.status >= 200 && response.status < 300) {
+            return { user: response.data.data, message: '' };
+        } 
+
+        return { user: null, message: response.data.message || 'Error ao autenticar' };
+    } catch (error: any) {
+         console.error('Register error details:', error);
+        if (error.response) {
+            return { user: null, message: error.response.data.message || 'Erro no registro' };
+        } else {
+            return { user: null, message: 'Erro de rede' };
+        }
+    }
+}

@@ -53,7 +53,9 @@ export default class AuthController{
             const tokenPayload = { id: user.id, role: user.role }
             const token = signToken(tokenPayload)
 
-            res.status(200).json(new AuthResponse().login(user, token));
+            res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
+            
+            res.status(200).json(new AuthResponse().login(user));
         } catch (err) {
             next(err)
         }
