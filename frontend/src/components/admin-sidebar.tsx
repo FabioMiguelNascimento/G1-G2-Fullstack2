@@ -31,8 +31,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
         title: "Categorias",
         url: "categorias",
         icon: Tag
-      }
-    ],
+      }],
   }
   return (
     <Sidebar collapsible="icon" {...props} className="mt-20">
