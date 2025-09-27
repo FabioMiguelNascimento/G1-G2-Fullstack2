@@ -23,11 +23,11 @@ export default class AuthResponse {
         };
     }
 
-    login(data: LoginData, token: string) {
+    login(data: LoginData) {
         return {
             code: 200,
             message: "Login realizado com sucesso",
-            data: { id: data.id, name: data.name, email: data.email, role: data.role, token: token },
+            data: { id: data.id, name: data.name, email: data.email, role: data.role },
         };
     }
 }

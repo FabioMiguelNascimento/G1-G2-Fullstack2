@@ -31,11 +31,11 @@ import {
 import { Link } from "react-router-dom";
 import CartSheet from "./CartSheet";
 import { Avatar, AvatarFallback } from "./ui/avatar";
-import type UserType from "@/types/user.type";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import UserDropdownMenu from "./UserDropdownMenu";
 
-export default function MobileMenu({ user }: { user: UserType }) {
+export default function MobileMenu() {
     const [open, setOpen] = useState(false);
 
     return (
@@ -98,84 +98,7 @@ export default function MobileMenu({ user }: { user: UserType }) {
                             </NavigationMenuItem>
 
                             <NavigationMenuItem>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <div className="flex items-center gap-2 px-3 py-2 rounded text-white hover:text-black   hover:bg-accent cursor-pointer">
-                                            <Avatar className="w-8 h-8">
-                                                <AvatarFallback className="bg-blue-600 font-bold text-white text-sm text-bold">
-                                                    {user.name
-                                                        .charAt(0)
-                                                        .toUpperCase()}
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <span className="text-sm font-bold">
-                                                {user.name}
-                                            </span>
-                                            <ChevronsUpDown
-                                                height={18}
-                                                width={18}
-                                            />
-                                        </div>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent>
-                                        <DropdownMenuItem
-                                            asChild
-                                            className="cursor-pointer"
-                                        >
-                                            <Link
-                                                to="/account"
-                                                onClick={() => setOpen(false)}
-                                            >
-                                                <User className="mr-2 h-4 w-4" />
-                                                Minha conta
-                                            </Link>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            asChild
-                                            className="cursor-pointer"
-                                        >
-                                            <Link
-                                                to="/cart"
-                                                onClick={() => setOpen(false)}
-                                            >
-                                                <ShoppingCart className="mr-2 h-4 w-4" />
-                                                Meu carrinho
-                                            </Link>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            asChild
-                                            className="cursor-pointer"
-                                        >
-                                            <Link
-                                                to="/favorites"
-                                                onClick={() => setOpen(false)}
-                                            >
-                                                <Heart className="mr-2 h-4 w-4" />
-                                                Meus favoritos
-                                            </Link>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            asChild
-                                            className="cursor-pointer"
-                                        >
-                                            <Link
-                                                to="/orders"
-                                                onClick={() => setOpen(false)}
-                                            >
-                                                <Package className="mr-2 h-4 w-4" />
-                                                Meus pedidos
-                                            </Link>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem className="cursor-pointer">
-                                            <LogOut
-                                                className="mr-2 h-4 w-4"
-                                                onClick={() => setOpen(false)}
-                                            />
-                                            Logout
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
+                                <UserDropdownMenu />
                             </NavigationMenuItem>
                         </NavigationMenuList>
                     </NavigationMenu>

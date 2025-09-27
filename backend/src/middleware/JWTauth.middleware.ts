@@ -6,8 +6,7 @@ import jwt from "jsonwebtoken";
 
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
     const SECRET = env.JWT_SECRET
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1];
+    const token = req.cookies?.token;
 
     if (!token) {
         return res.status(401).json({ code: 401, message: "Sem token! Não autorizado." });

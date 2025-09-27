@@ -14,12 +14,10 @@ export default class AuthController{
 
             const existingUser = await repo.findUserByEmail(userInput.email)
 
-            // Verifica se ja existe um user com esse email
             if (existingUser) {
                 throw new ConflictError("Usuario ja cadastrado com esse email, que tal fazer login?")
             }   
 
-            // Faz o hash na senha do usuario
             const hashedPassword = encodePassword(userInput.password)
 
             userInput = {...userInput, password: hashedPassword}
@@ -55,7 +53,9 @@ export default class AuthController{
             const tokenPayload = { id: user.id, role: user.role }
             const token = signToken(tokenPayload)
 
-            res.status(200).json(new AuthResponse().login(user, token));
+            res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
+            
+            res.status(200).json(new AuthResponse().login(user));
         } catch (err) {
             next(err)
         }
