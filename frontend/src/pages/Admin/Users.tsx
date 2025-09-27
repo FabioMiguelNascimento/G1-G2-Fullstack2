@@ -1,11 +1,20 @@
+import type { Column } from "@/components/data-table";
+import DataTable from "@/components/data-table";
 import { Input } from "@/components/ui/input";
 import { useFetchUsers } from "@/hooks/useFetchUsers";
+import type { User } from "@/types/user.type";
 import { Search } from "lucide-react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface UsersProps {} 
 export default function Users ( {}: UsersProps ) {
-    const { users } = useFetchUsers()
+    const { users, error, loading } = useFetchUsers()
+    const columns: Column<User>[] = [
+        { key: 'id', header: 'ID' },
+        { key: 'name', header: 'Nome' },
+        { key: 'email', header: 'Email' },
+        { key: 'role', header: 'Função' }
+    ];
+    
         return (
             <div>
                 <header>
@@ -15,26 +24,7 @@ export default function Users ( {}: UsersProps ) {
                     </div>
                 </header>
                 <div>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Name</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {users && users.length > 0 ? (
-                                users.map((user) => (
-                                    <TableRow key={user.id}>
-                                        <TableCell>{user.name}</TableCell>
-                                    </TableRow>
-                                ))
-                            ) : (
-                                <TableRow>
-                                    <TableCell>No users found</TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
+                   <DataTable data={users} columns={columns} isLoading={loading} onError={error} />
                 </div>
             </div>
         )
