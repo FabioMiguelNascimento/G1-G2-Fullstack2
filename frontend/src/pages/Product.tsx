@@ -36,7 +36,7 @@ const tagIconMap: Record<string, any> = {
 export default function Product() {
   const { id } = useParams();
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
-  const { product } = useFetchProduct(id);
+  const { product } = useFetchProduct(id ?? null);
 
   if (!product) {
     return (

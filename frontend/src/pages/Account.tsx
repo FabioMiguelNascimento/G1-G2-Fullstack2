@@ -12,7 +12,6 @@ export default function Account() {
     const sectionName = sectionNames[location.pathname] || "Minha conta";
     return (
         <>
-            <Header />
             <AccountSidebar
                 sectionContent={<Outlet />}
                 sectionName={sectionName}
