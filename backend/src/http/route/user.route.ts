@@ -10,6 +10,9 @@ const userController = new UserController();
 
 router.use(authenticateToken);
 
+// Rota para buscar dados de um usuário por id
+router.get('/profile/:id', validateParams(idSchema), userController.getUserDataById);
+
 // Rota para listar os dados do próprio usuário
 router.get('/profile', userController.getSelfUserData);
 
