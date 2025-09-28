@@ -1,50 +1,53 @@
-"use client"
+"use client";
 
+import { User as UserIcon, ShoppingCart, Package } from "lucide-react";
+import * as React from "react";
+
+import { NavMain } from "@/components/nav-main";
 import {
-  Star,
-} from "lucide-react"
-import * as React from "react"
+    Sidebar,
+    SidebarContent,
+    SidebarHeader,
+    SidebarRail,
+    SidebarTrigger,
+} from "@/components/ui/sidebar";
 
-import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
+import useAuthContext from "@/hooks/useAthContext";
+import type { User } from "@/types/user.type";
 
-// This is sample data.
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
+const buildNavMain = (user: User | null) => [
     {
-      title: "Favoritos",
-      url: "#",
-      icon: Star  ,
+        title: "Minha conta",
+        url: user ? `/account/${user.id}` : "/account/",
+        icon: UserIcon,
     },
-  ],
-}
+    {
+        title: "Carrinho",
+        url: "/account/cart",
+        icon: ShoppingCart,
+    },
+    {
+        title: "Pedidos",
+        url: "/account/orders",
+        icon: Package,
+    },
+];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  return (
-    <Sidebar collapsible="icon" {...props} className="mt-20">
-      <SidebarHeader>
-        <SidebarTrigger className="-ml-1" />
-      </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={data.navMain} />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
-  )
+    const { user } = useAuthContext();
+    
+    // Estruturando os dados dinamicamente baseado no usuário logado
+    const navMainItems = buildNavMain(user);
+    
+    return (
+        <Sidebar collapsible="icon" {...props} className="pt-20">
+            <SidebarHeader>
+                <SidebarTrigger className="-ml-1" />
+            </SidebarHeader>
+            <SidebarContent>
+                <NavMain items={navMainItems} />
+            </SidebarContent>
+            <SidebarRail />
+        </Sidebar>
+    );
 }
