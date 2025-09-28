@@ -22,7 +22,7 @@ export default function UserDropdownMenu() {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuItem asChild className="cursor-pointer">
-                    <Link to="/account">
+                    <Link to={`/account/${user.id}`}>
                         <User className="mr-2 h-4 w-4" />
                         Minha conta
                     </Link>

@@ -51,7 +51,7 @@ const routesConfig: RouteObject[] = [
                 element: <AuthenticatedRoutes />,
                 children: [
                     {
-                        path: "/account",
+                        path: "/account/:userId",
                         element: <Account />,
                         children: [
                             {
