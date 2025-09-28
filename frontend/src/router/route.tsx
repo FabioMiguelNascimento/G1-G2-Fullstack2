@@ -1,9 +1,5 @@
 import App from "@/App";
-<<<<<<< HEAD
 import Account from "@/pages/Account";
-=======
-import Admin from "@/pages/Admin/Admin";
->>>>>>> e3f5cd744c28abd0c8b6c687d2923c1a6556eb68
 import AdminLayout from "@/pages/Admin/AdminLayout";
 import Cart from "@/pages/Cart";
 import Favorites from "@/pages/Favorites";
@@ -16,7 +12,7 @@ import Profile from "@/pages/Profile";
 import Register from "@/pages/Register";
 import { type RouteObject } from "react-router-dom";
 import { AdminRoutes, AuthenticatedRoutes } from "./ProtectedRoutes";
-import Users from "@/pages/Admin/Users";
+// import Users from "@/pages/Admin/Users";
 
 const routesConfig: RouteObject[] = [
     {
@@ -54,7 +50,6 @@ const routesConfig: RouteObject[] = [
             {
                 element: <AuthenticatedRoutes />,
                 children: [
-<<<<<<< HEAD
                     {
                         path: "/account",
                         element: <Account />,
@@ -88,24 +83,6 @@ const routesConfig: RouteObject[] = [
             },
         ],
     },
-=======
-                  {
-                    index: true,
-                    element: <Admin />
-                  },
-                  {
-                    path: "users",
-                    element: <Users />
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ],
-  },
->>>>>>> e3f5cd744c28abd0c8b6c687d2923c1a6556eb68
 ];
 
 export default routesConfig;
