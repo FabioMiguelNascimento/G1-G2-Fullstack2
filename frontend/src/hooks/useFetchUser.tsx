@@ -1,4 +1,4 @@
-import type { User } from "@/schemas/user.schema";
+import type { User } from "@/types/user.type";
 import api from "@/utils/api";
 import { useState, useEffect } from "react";
 
@@ -25,7 +25,7 @@ export default function useFetchUser(userId: string | null) {
       try {
         setLoading(true);
         setError(null);
-        const response = await api.get<GetUserResponse>(`/user/${userId}`, {
+        const response = await api.get<GetUserResponse>(`/user/profile/${userId}`, {
           signal: controller.signal,
         });
         setUser(response.data.data);
