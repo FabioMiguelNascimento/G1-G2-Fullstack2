@@ -1,49 +1,49 @@
-import type { User } from "@/types/user.type";
+import type { CartItem } from "@/types/cart.type";
 import api from "@/utils/api";
 import { useEffect, useState } from "react";
 
-interface GetUserResponse {
+interface GetCartResponse {
   code: number,
   message: string,
-  data: User
+  data: CartItem[]
 }
 
-export default function useFetchUser(userId: string | null) {
-  console.log('👤 HOOK useFetchUser chamado com userId:', userId);
-  const [user, setUser] = useState<User | null>(null);
+export default function useFetchUserCart(userId: string | null) {
+  console.log('🛒 HOOK useFetchUserCart chamado com userId:', userId);
+  const [cart, setCart] = useState<CartItem[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!userId) {
-      setUser(null);
+      setCart(null);
       setLoading(false);
       return;
     }
 
     const controller = new AbortController();
-    const fetchUser = async () => {
+    const fetchCart = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await api.get<GetUserResponse>(`/user/profile/${userId}`, {
+        const response = await api.get<GetCartResponse>(`/cart`, {
           signal: controller.signal,
         });
-        setUser(response.data.data);
+        setCart(response.data.data);
       } catch (err: unknown) {
         if (err instanceof Error) {
           if (err.name === "CanceledError" || err.name === "AbortError") return;
           console.error(err);
-          setError(err?.message ?? "Erro ao carregar usuário");
+          setError(err?.message ?? "Erro ao carregar carrinho");
         }
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUser();
+    fetchCart();
     return () => controller.abort();
   }, [userId]);
 
-  return { user, loading, error };
+  return { cart, loading, error };
 }

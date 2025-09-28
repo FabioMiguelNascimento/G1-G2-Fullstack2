@@ -28,7 +28,7 @@ export default function UserDropdownMenu() {
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="cursor-pointer">
-                    <Link to="/account/cart">
+                    <Link to={`/account/${user.id}/cart`}>
                         <ShoppingCart className="mr-2 h-4 w-4" />
                         Meu carrinho
                     </Link>

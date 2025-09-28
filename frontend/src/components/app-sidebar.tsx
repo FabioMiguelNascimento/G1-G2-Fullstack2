@@ -23,7 +23,7 @@ const buildNavMain = (user: User | null) => [
     },
     {
         title: "Carrinho",
-        url: "/account/cart",
+        url: user ? `/account/${user.id}/cart` : "/account/cart",
         icon: ShoppingCart,
     },
     {
