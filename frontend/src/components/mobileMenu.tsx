@@ -81,18 +81,6 @@ export default function MobileMenu() {
                                 </NavigationMenuLink>
                             </NavigationMenuItem>
 
-                            <NavigationMenuItem>
-                                <NavigationMenuLink asChild>
-                                    <Link
-                                        to="/cart"
-                                        className="block px-3 py-2 rounded text-white hover:text-black"
-                                        onClick={() => setOpen(false)}
-                                    >
-                                        Carrinho
-                                    </Link>
-                                </NavigationMenuLink>
-                            </NavigationMenuItem>
-
                             <NavigationMenuItem className="flex items-center gap-2 px-3 py-2 rounded text-white hover:text-black hover:bg-accent cursor-pointer">
                                 <CartSheet />
                             </NavigationMenuItem>

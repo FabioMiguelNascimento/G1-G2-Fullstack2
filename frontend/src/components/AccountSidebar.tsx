@@ -23,6 +23,7 @@ export default function AccountSidebar({
     sectionName,
 }: AccountSidebarProps) {
     const isMobile = useIsMobile();
+    console.log(sectionName)
     return (
         <SidebarProvider>
             <AppSidebar />

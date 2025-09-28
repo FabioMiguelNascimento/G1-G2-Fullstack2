@@ -21,9 +21,7 @@ import { useParams } from "react-router-dom";
 
 export default function Profile() {
   const { userId } = useParams();
-  console.log("UserId from params:", userId);
   const { user, loading, error } = useFetchUser(userId ?? null);
-  console.log("User data:", user);
 
   if (loading) {
     return (

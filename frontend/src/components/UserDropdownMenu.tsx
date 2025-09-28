@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import useAuthContext from "@/hooks/useAthContext";
-import { ChevronsUpDown, Heart, LogOut, Package, ShoppingCart, User } from "lucide-react";
+import { ChevronsUpDown, LogOut, Package, ShoppingCart, User } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function UserDropdownMenu() {
@@ -28,19 +28,19 @@ export default function UserDropdownMenu() {
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="cursor-pointer">
-                    <Link to="/cart">
+                    <Link to="/account/cart">
                         <ShoppingCart className="mr-2 h-4 w-4" />
                         Meu carrinho
                     </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild className="cursor-pointer">
+                {/* <DropdownMenuItem asChild className="cursor-pointer">
                     <Link to="/favorites">
                         <Heart className="mr-2 h-4 w-4" />
                         Meus favoritos
                     </Link>
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 <DropdownMenuItem asChild className="cursor-pointer">
-                    <Link to="/orders">
+                    <Link to="/account/orders">
                         <Package className="mr-2 h-4 w-4" />
                         Meus pedidos
                     </Link>
