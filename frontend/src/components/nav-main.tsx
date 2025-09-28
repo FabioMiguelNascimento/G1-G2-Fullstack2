@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { ChevronRight, type LucideIcon } from "lucide-react";
 
 import {
@@ -9,6 +10,16 @@ import {
 
 import { Link, useNavigate } from "react-router-dom";
 import { useSidebar } from "@/components/ui/sidebar";
+=======
+import { type LucideIcon } from "lucide-react"
+import { Link } from 'react-router-dom'
+import {
+  SidebarGroup,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem
+} from "@/components/ui/sidebar"
+>>>>>>> e3f5cd744c28abd0c8b6c687d2923c1a6556eb68
 
 export function NavMain({
     items,
@@ -24,6 +35,7 @@ export function NavMain({
         }[];
     }[];
 }) {
+<<<<<<< HEAD
     const { setOpenMobile } = useSidebar();
 
     return (
@@ -46,4 +58,22 @@ export function NavMain({
             </SidebarMenu>
         </SidebarGroup>
     );
+=======
+  return (
+    <SidebarGroup>
+      <SidebarMenu>
+        {items.map((item) => (
+          <SidebarMenuItem key={item.title}>
+            <Link to={item.url}>
+              <SidebarMenuButton tooltip={item.title} className="cursor-pointer">
+                {item.icon && <item.icon />}
+                <span>{item.title}</span>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
+        ))}
+      </SidebarMenu>
+    </SidebarGroup>
+  )
+>>>>>>> e3f5cd744c28abd0c8b6c687d2923c1a6556eb68
 }
