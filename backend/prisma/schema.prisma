@@ -39,7 +39,7 @@ enum ReturnPolicy {
 }
 
 model User {
-  id       String   @id @default(uuid())
+  id       String   @id @default(uuid()) @unique
   name     String
   email    String   @unique
   password String
@@ -54,7 +54,7 @@ model User {
 }
 
 model Order {
-  id     String @id @default(uuid())
+  id     String @id @default(uuid()) @unique
   name   String
   userId String
   user   User   @relation(fields: [userId], references: [id])
@@ -63,7 +63,7 @@ model Order {
 }
 
 model Product {
-  id          String @id @default(uuid())
+  id          String @id @default(uuid()) @unique
   title       String
   description String
   price       Float
@@ -95,7 +95,7 @@ model Product {
 }
 
 model Cart {
-  id         String @id @default(uuid())
+  id         String @id @default(uuid()) @unique
   totalValue String @default("0")
 
   product ProductInCart[]
@@ -108,6 +108,8 @@ model ProductInCart {
 
   cart   Cart   @relation(fields: [cartId], references: [id])
   cartId String
+
+  quantity  Int @default(1)
 
   assignedAt DateTime @default(now())
   assignedBy String
