@@ -20,6 +20,18 @@ export default class UserController {
         }
     }
 
+    getUserDataById = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.validatedData;
+            const user = await repo.findUserById(id);
+            if (!user)
+                throw new NotFoundError("Usuário não encontrado");
+            res.status(200).json(viewResponse.getUserData(user));
+        } catch (error) {
+            next(error)
+        }
+    }
+
     listAllUsers = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const users = await repo.getAllUsers();
