@@ -13,6 +13,9 @@ router.use(authenticateToken);
 // Rota para listar os dados do próprio usuário
 router.get('/profile', userController.getSelfUserData);
 
+// Rota pra listar os dados de um usuário por filtro (apenas admin)
+router.get('/filter', validatePermission(['ADMIN']), userController.findUserByFilter);
+
 // Rota para listar todos os usuários
 router.get('/', validatePermission(['ADMIN']), userController.listAllUsers);
 

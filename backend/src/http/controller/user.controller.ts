@@ -28,7 +28,7 @@ export default class UserController {
                 const { password, createdAt, updatedAt, ...allUsers } = user
                 return allUsers
             })
-            
+
             res.status(200).json(allUsers);
         } catch (error) {
             next(error)
@@ -49,7 +49,7 @@ export default class UserController {
             res.status(200).json(newUserData);
 
         } catch (error) {
-           next(error) 
+            next(error)
         }
     }
 
@@ -70,7 +70,7 @@ export default class UserController {
 
     deleteUserData = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { id }= req.validatedData;
+            const { id } = req.validatedData;
             console.log(id)
             const user = await repo.findUserById(id);
 
@@ -84,4 +84,34 @@ export default class UserController {
             next(error)
         }
     }
+
+    findUserByFilter = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const nameFilter = req.query.name as string;
+            const emailFilter = req.query.email as string;
+            const roleFilter = req.query.role as string;
+            const createdAtFilter = req.query.createdAt as string;
+            const users = await repo.getAllUsers();
+
+            const allUsers = users.map(user => {
+                const { password, updatedAt, ...allUsers } = user
+                return allUsers
+            })
+
+            const filteredUsers = allUsers.filter(user => 
+                (nameFilter ? user.name.includes(nameFilter) : true) &&
+                (emailFilter ? user.email.includes(emailFilter) : true) &&
+                (roleFilter ? user.role === roleFilter : true) &&
+                (createdAtFilter
+                    ? new Date(user.createdAt).toISOString().slice(0, 10) === new Date(createdAtFilter).toISOString().slice(0, 10)
+                    : true)
+            );
+
+            res.status(200).json(filteredUsers);
+        } catch (error) {
+            next(error)
+        }
+    }
 }
+
+
