@@ -5,15 +5,36 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import useAuthContext from '@/hooks/useAthContext';
 import useFetchUserCart from '@/hooks/useFetchUserCart';
 
+// Tipo para o item do carrinho baseado na estrutura real
+interface CartProduct {
+  product: {
+    id: string;
+    title: string;
+    description: string;
+    price: number;
+    image?: string;
+  };
+  quantity: number;
+  total: number;
+}
+
+// Tipo para o carrinho completo
+interface Cart {
+  products: CartProduct[];
+  totalCart: number;
+}
+
 export default function Cart() {
-  console.log('🛒 CART RENDERIZADO');
   const { user } = useAuthContext();
   const { cart, loading, error } = useFetchUserCart(user?.id || null);
 
+  // Fazer cast do tipo para a estrutura real
+  const cartData = cart as unknown as Cart | null;
+
   // Calcular valores derivados do carrinho
-  const items = cart || [];
-  const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const itemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  const items = (cartData && Array.isArray(cartData.products)) ? cartData.products : [];
+  const total = cartData?.totalCart || 0;
+  const itemsCount = items.reduce((sum: number, item: CartProduct) => sum + item.quantity, 0);
 
   // Se o usuário não estiver logado
   if (!user) {
@@ -66,7 +87,7 @@ export default function Cart() {
         <Card>
           <CardContent className="p-8 text-center">
             <p className="text-gray-500 mb-4">Seu carrinho está vazio</p>
-            <Button onClick={() => window.location.href = '/products-list'}>
+            <Button onClick={() => window.location.href = '/products'}>
               Continuar comprando
             </Button>
           </CardContent>
@@ -82,19 +103,19 @@ export default function Cart() {
       <div className="grid gap-6 md:grid-cols-3">
         {/* Lista de itens do carrinho */}
         <div className="md:col-span-2 space-y-4">
-          {items.map((item) => (
-            <Card key={item.id}>
+          {items.map((item: CartProduct) => (
+            <Card key={item.product.id}>
               <CardContent className="p-4">
                 <div className="flex items-center gap-4">
                   {item.product.image && (
                     <img 
                       src={item.product.image} 
-                      alt={item.product.name}
+                      alt={item.product.title}
                       className="w-16 h-16 object-cover rounded-lg"
                     />
                   )}
                   <div className="flex-1">
-                    <h3 className="font-semibold">{item.product.name}</h3>
+                    <h3 className="font-semibold">{item.product.title}</h3>
                     <p className="text-gray-600">
                       Quantidade: {item.quantity}
                     </p>
@@ -104,7 +125,7 @@ export default function Cart() {
                   </div>
                   <div className="text-right">
                     <p className="font-semibold">
-                      R$ {(item.price * item.quantity).toFixed(2)}
+                      R$ {item.total.toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -136,7 +157,7 @@ export default function Cart() {
               <Button 
                 variant="outline" 
                 className="w-full"
-                onClick={() => window.location.href = '/products-list'}
+                onClick={() => window.location.href = '/products'}
               >
                 Continuar Comprando
               </Button>

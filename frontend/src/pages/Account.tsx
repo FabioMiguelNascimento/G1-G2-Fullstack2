@@ -9,7 +9,7 @@ export default function Account() {
         if (pathname === "/account" || pathname === "/account/") {
             return "Minha conta";
         }
-        if (pathname.includes("/account/cart")) {
+        if (pathname.includes("/cart")) {
             return "Carrinho";
         }
         if (pathname.includes("/account/orders")) {

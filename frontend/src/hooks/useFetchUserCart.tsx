@@ -9,7 +9,6 @@ interface GetCartResponse {
 }
 
 export default function useFetchUserCart(userId: string | null) {
-  console.log('🛒 HOOK useFetchUserCart chamado com userId:', userId);
   const [cart, setCart] = useState<CartItem[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

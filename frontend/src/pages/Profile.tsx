@@ -20,7 +20,6 @@ import { useParams } from "react-router-dom";
 
 
 export default function Profile() {
-  console.log('👤 PROFILE RENDERIZADO');
   const { userId } = useParams();
   const { user, loading, error } = useFetchUser(userId ?? null);
 

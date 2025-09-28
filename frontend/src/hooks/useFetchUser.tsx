@@ -9,7 +9,6 @@ interface GetUserResponse {
 }
 
 export default function useFetchUser(userId: string | null) {
-  console.log('👤 HOOK useFetchUser chamado com userId:', userId);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
