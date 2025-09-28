@@ -8,13 +8,11 @@ import {
 } from "@/components/ui/card";
 import useFetchUser from "@/hooks/useFetchUser";
 import {
-    Heart,
+    Edit,
     HeartCrack,
     RefreshCw,
-    Share,
     TextIcon,
 } from "lucide-react";
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 
@@ -25,7 +23,7 @@ export default function Profile() {
   const { userId } = useParams();
   console.log("UserId from params:", userId);
   const { user, loading, error } = useFetchUser(userId ?? null);
-  const [isFollowing, setIsFollowing] = useState(false);
+  console.log("User data:", user);
 
   if (loading) {
     return (
@@ -67,18 +65,9 @@ export default function Profile() {
 
           {/* Botões de Ação */}
           <div className="flex justify-center gap-4 mt-6">
-            <Button
-              variant={isFollowing ? "outline" : "default"}
-              onClick={() => setIsFollowing(!isFollowing)}
-              className="flex items-center gap-2"
-            >
-              <Heart className={`w-4 h-4 ${isFollowing ? "fill-red-500 text-red-500" : ""}`} />
-              {isFollowing ? "Seguindo" : "Seguir"}
-            </Button>
-            
-            <Button variant="outline" className="flex items-center gap-2">
-              <Share className="w-4 h-4" />
-              Compartilhar
+            <Button variant="default" className="flex items-center gap-2">
+              <Edit className="w-4 h-4" />
+              Editar dados
             </Button>
           </div>
         </CardHeader>
@@ -108,20 +97,6 @@ export default function Profile() {
               <strong className="text-sm font-medium text-gray-500">Email:</strong>
               <p className="mt-1">{user.email}</p>
             </div>
-            
-            {user.createdAt && (
-              <div>
-                <strong className="text-sm font-medium text-gray-500">Membro desde:</strong>
-                <p className="mt-1">{new Date(user.createdAt).toLocaleDateString('pt-BR')}</p>
-              </div>
-            )}
-            
-            {user.updatedAt && (
-              <div>
-                <strong className="text-sm font-medium text-gray-500">Última atualização:</strong>
-                <p className="mt-1">{new Date(user.updatedAt).toLocaleDateString('pt-BR')}</p>
-              </div>
-            )}
           </div>
         </CardContent>
       </Card>
