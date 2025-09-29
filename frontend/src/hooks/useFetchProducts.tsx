@@ -1,16 +1,26 @@
 import type { Product } from '@/schemas/product.schema';
 import api from '@/utils/api';
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 export const useFetchProducts = () => {
   const [products, setProducts] = useState<Product[] | []>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (filters?: Record<string, string>) => {
     setLoading(true);
     try {
-      const response = await api.get('/product');
+      const params = new URLSearchParams(filters || {});
+      if (!filters) {
+        searchParams.forEach((value, key) => {
+          if (!params.has(key)) {
+            params.set(key, value);
+          }
+        });
+      }
+      const response = await api.get(`/product?${params.toString()}`);
       setProducts(response.data.data);
       setError(null);
     } catch (err: any) {
@@ -22,7 +32,11 @@ export const useFetchProducts = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [searchParams]);
 
-  return { products, loading, error, refetch: fetchProducts };
+  const refetch = (filters: Record<string, string>) => {
+    setSearchParams(filters);
+  };
+
+  return { products, loading, error, refetch };
 };

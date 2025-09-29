@@ -63,7 +63,8 @@ export default class ProductController {
 
     getAll = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const products = await this.repo.getAll()
+            const filters = req.query;
+            const products = await this.repo.getAll(filters);
 
             res.status(200).json(this.view.getAll(products))
         } catch (err) {
