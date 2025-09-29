@@ -12,6 +12,8 @@ import Profile from "@/pages/Profile";
 import Register from "@/pages/Register";
 import { type RouteObject } from "react-router-dom";
 import { AdminRoutes, AuthenticatedRoutes } from "./ProtectedRoutes";
+import Users from "@/pages/Admin/Users";
+import ProductAdmin from "@/pages/Admin/Product";
 
 const routesConfig: RouteObject[] = [
     {
@@ -74,6 +76,14 @@ const routesConfig: RouteObject[] = [
                                         index: true,
                                         element: <AdminLayout />,
                                     },
+                                    {
+                                        path: 'users',
+                                        element: <Users />
+                                    },
+                                    {
+                                        path: 'produtos',
+                                        element: <ProductAdmin />
+                                    }
                                 ],
                             },
                         ],

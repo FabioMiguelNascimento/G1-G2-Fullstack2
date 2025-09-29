@@ -21,8 +21,8 @@ import { Trash } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
-interface ProductProps {} 
-export default function Product ( {}: ProductProps ) {
+interface ProductAdminProps {} 
+export default function ProductAdmin ( {}: ProductAdminProps ) {
     const { products, loading, error, refetch } = useFetchProducts()
     const { create, update, remove } = useProductMutations();
     const [searchTerm, setSearchTerm] = useState("");
