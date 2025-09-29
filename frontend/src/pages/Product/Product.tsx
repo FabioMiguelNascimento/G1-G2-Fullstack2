@@ -28,6 +28,7 @@ import {
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
+import { useCartContext } from "@/contexts/CartContext";
 import useAddToCart from "@/hooks/useAddToCart";
 
 const tagIconMap: Record<string, any> = {
@@ -42,6 +43,7 @@ export default function Product() {
   const [quantity, setQuantity] = useState(1);
   const { product } = useFetchProduct(id ?? null);
   const { addToCart, loading } = useAddToCart();
+  const { refetchCart } = useCartContext();
 
   if (!product) {
     return (
@@ -271,6 +273,7 @@ export default function Product() {
 
                     if (success) {
                       console.log(`${quantity} produto(s) adicionado(s) ao carrinho!`);
+                      refetchCart();
                       // Opcional: Resetar quantidade para 1 após adicionar
                       // setQuantity(1);
                     }

@@ -8,7 +8,7 @@ import { type RouteObject } from "react-router-dom";
 import { AdminRoutes, AuthenticatedRoutes } from "./ProtectedRoutes";
 import Users from "@/pages/Admin/Users";
 import ProductAdmin from "@/pages/Admin/Product";
-import Product from "@/pages/Admin/Product";
+import Product from "@/pages/Product/Product";
 import Login from "@/pages/Auth/Login";
 import Register from "@/pages/Auth/Register";
 import ProductsLists from "@/pages/Product/ProductsList";

@@ -7,6 +7,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useCartContext } from "@/contexts/CartContext";
 import useAuthContext from "@/hooks/useAthContext";
 import useCartActions from "@/hooks/useCartActions";
 import useFetchUserCart from "@/hooks/useFetchUserCart";
@@ -25,8 +26,8 @@ import {
 
 export default function CartSheet() {
   const { user } = useAuthContext();
-  const [refetchTrigger, setRefetchTrigger] = useState(0);
-  const { cart, loading, error } = useFetchUserCart(user?.id || null, refetchTrigger);
+  const { trigger } = useCartContext();
+  const { cart, loading, error } = useFetchUserCart(user?.id || null, trigger);
   const { updateQuantity, removeFromCart, loading: actionLoading } = useCartActions();
 
   const [isDialogOpen, setDialogOpen] = useState(false);
@@ -39,7 +40,7 @@ export default function CartSheet() {
 
 
   const increaseQuantity = async (id: string, currentQuantity: number) => {
-    await updateQuantity(id, currentQuantity + 1, () => setRefetchTrigger(prev => prev + 1));
+    await updateQuantity(id, currentQuantity + 1);
   };
 
   const decreaseQuantity = async (
@@ -53,7 +54,7 @@ export default function CartSheet() {
     }
 
     if (currentQuantity > 1) {
-      await updateQuantity(id, currentQuantity - 1, () => setRefetchTrigger(prev => prev + 1));
+      await updateQuantity(id, currentQuantity - 1);
     } else {
       removeProduct(id);
     }
@@ -82,7 +83,7 @@ export default function CartSheet() {
         setDialogOpen(false);
       },
       async () => {
-        await removeFromCart(id, () => setRefetchTrigger(prev => prev + 1));
+        await removeFromCart(id);
         setDialogOpen(false);
       }
     );
@@ -98,9 +99,8 @@ export default function CartSheet() {
       async () => {
         if (!Array.isArray(cart?.products)) return;
         for (const item of cart.products) {
-          await removeFromCart(item.product.id, () => {});
+          await removeFromCart(item.product.id);
         }
-        setRefetchTrigger(prev => prev + 1);
         setDialogOpen(false);
       }
     );
