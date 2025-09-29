@@ -1,8 +1,9 @@
+import type { Product } from '@/schemas/product.schema';
 import api from '@/utils/api';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export const useFetchProducts = () => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Product[] | []>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 

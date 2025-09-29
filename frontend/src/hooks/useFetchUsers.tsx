@@ -1,8 +1,9 @@
+import type { User } from '@/types/user.type';
 import api from '@/utils/api';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export const useFetchUsers = () => {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
