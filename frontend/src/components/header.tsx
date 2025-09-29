@@ -12,8 +12,9 @@ export default function Header() {
             <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
                 <Link
                     to="/"
-                    className="text-2xl font-bold text-white hover:text-blue-200"
+                    className="flex items-center text-2xl font-bold text-white hover:text-blue-200"
                 >
+                    <img src="/logo.svg" alt="Logo" className="h-12 w-12 mr-2" />
                     OsGuriShop
                 </Link>
                 {isMobile ? (
