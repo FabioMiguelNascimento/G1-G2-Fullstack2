@@ -13,5 +13,6 @@ router.use(authenticateToken)
 router.get('/', cartController.getAll)
 router.post('/', validateBody(addProductToCartSchema), cartController.addProduct)
 router.delete('/:productId', cartController.removeProduct)
+router.put('/', validateBody(addProductToCartSchema), cartController.updateQuantity)
 
 export default router

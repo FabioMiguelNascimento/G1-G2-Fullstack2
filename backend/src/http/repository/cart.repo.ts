@@ -171,4 +171,60 @@ export default class CartRepository implements ICart {
 
         return this.calculateCartResponse(updatedCart);
     }
+
+    async updateQuantity(productId: string, quantity: number, userId: string): Promise<CartResponse | null> {
+        if (quantity <= 0) return null; // Quantidade inválida
+
+        const cart = await prisma.cart.findFirst({
+            where: {
+                user: {
+                    id: userId
+                }
+            }
+        });
+        if (!cart) return null; // Carrinho não encontrado
+
+        const existing = await prisma.productInCart.findUnique({
+            where: {
+                productId_cartId: {
+                    productId: productId,
+                    cartId: cart.id
+                }
+            },
+            include: {
+                product: true
+            }
+        });
+
+        if (!existing) return null; // Produto não encontrado no carrinho
+
+        // Atualiza a quantidade do produto no carrinho
+        const updatedCart = await prisma.cart.update({
+            where: { id: cart.id },
+            data: {
+                product: {
+                    update: {
+                        where: {
+                            productId_cartId: {
+                                productId: productId,
+                                cartId: cart.id
+                            }
+                        },
+                        data: {
+                            quantity: quantity
+                        }
+                    }
+                }
+            },
+            include: {
+                product: {
+                    include: {
+                        product: true
+                    }
+                }
+            }
+        });
+
+        return this.calculateCartResponse(updatedCart);
+    }
 }

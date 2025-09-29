@@ -12,4 +12,8 @@ export default class CartView {
     removeProduct(data: CartResponse | null) {
         return { code: 200, message: "Produto removido com sucesso", data: data}
     }
+    
+    updateQuantity(data: CartResponse | null) {
+        return { code: 200, message: "Quantidade atualizada com sucesso", data: data}
+    }
 }

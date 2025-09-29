@@ -66,4 +66,21 @@ export default class CartController {
             next(err)
         }
     }
+
+    updateQuantity = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { productId, quantity }: AddProductToCartInput = req.validatedData
+            const userId = req.userId       
+
+            const cart = await this.repo.updateQuantity(productId, quantity, userId)
+
+            if (!cart) {
+                throw new NotFoundError("Produto nao encontrado no carrinho")
+            }
+
+            res.status(200).json(this.view.updateQuantity(cart))
+        } catch (err) {
+            next(err)
+        }
+    }
 }
