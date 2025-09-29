@@ -7,8 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import useFetchProduct from "@/hooks/useFetchProduct";
-import type { Product } from "@/schemas/product.schema";
 import buildPrice from "@/utils/buildPrice";
 import buildStars from "@/utils/buildStars";
 import {
@@ -16,16 +17,18 @@ import {
   CheckCircle,
   Codesandbox,
   Heart,
+  HeartCrack,
   RefreshCw,
-  TextIcon,
   Share,
   ShieldCheck,
   Star,
+  TextIcon,
   Truck,
-  HeartCrack,
 } from "lucide-react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+
+import useAddToCart from "@/hooks/useAddToCart";
 
 const tagIconMap: Record<string, any> = {
   destaque: BadgeCheckIcon,
@@ -36,7 +39,9 @@ const tagIconMap: Record<string, any> = {
 export default function Product() {
   const { id } = useParams();
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const { product } = useFetchProduct(id ?? null);
+  const { addToCart, loading } = useAddToCart();
 
   if (!product) {
     return (
@@ -201,6 +206,46 @@ export default function Product() {
                   <div className="flex gap-4">{buildColors()}</div>
                 </div>
               )}
+              
+              {/* Seletor de Quantidade */}
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="quantity" className="font-bold text-lg">Quantidade</Label>
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    disabled={quantity <= 1 || !product.inStock}
+                  >
+                    -
+                  </Button>
+                  <Input
+                    id="quantity"
+                    type="number"
+                    min="1"
+                    max="99"
+                    value={quantity}
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value) || 1;
+                      setQuantity(Math.max(1, Math.min(value, 99)));
+                    }}
+                    className="w-20 text-center"
+                    disabled={!product.inStock}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setQuantity(Math.min(99, quantity + 1))}
+                    disabled={quantity >= 99 || !product.inStock}
+                  >
+                    +
+                  </Button>
+                  <span className="text-sm text-muted-foreground ml-2">
+                    {product.inStock ? "Disponível" : "Indisponível"}
+                  </span>
+                </div>
+              </div>
+
               <div className="flex gap-4 flex-col">
                 <div className="flex gap-2 ">
                   <Button
@@ -221,9 +266,23 @@ export default function Product() {
                   className=" font-bold"
                   variant="outline"
                   size="lg"
-                  disabled={!product.inStock}
+                  onClick={async () => {
+                    const success = await addToCart(product.id, quantity);
+
+                    if (success) {
+                      console.log(`${quantity} produto(s) adicionado(s) ao carrinho!`);
+                      // Opcional: Resetar quantidade para 1 após adicionar
+                      // setQuantity(1);
+                    }
+                  }}
+                  disabled={!product.inStock || loading}
                 >
-                  {product.inStock ? "Adicionar ao Carrinho" : "Indisponível"}
+                  {loading 
+                    ? "Adicionando..." 
+                    : product.inStock 
+                      ? `Adicionar ${quantity} ao Carrinho` 
+                      : "Indisponível"
+                  }
                 </Button>
               </div>
               <div className="w-full h-[1px] bg-border"></div>
