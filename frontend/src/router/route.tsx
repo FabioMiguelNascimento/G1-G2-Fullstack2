@@ -1,19 +1,19 @@
 import App from "@/App";
-import Account from "@/pages/Account";
+import Account from "@/pages/Profile/Account";
 import AdminLayout from "@/pages/Admin/AdminLayout";
-import Cart from "@/pages/Cart";
+import Cart from "@/pages/Profile/Cart";
 import Home from "@/pages/Home";
-import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
-import Orders from "@/pages/Orders";
-import Product from "@/pages/Product";
-import ProductsLists from "@/pages/ProductsList";
-import Profile from "@/pages/Profile";
-import Register from "@/pages/Register";
 import { type RouteObject } from "react-router-dom";
 import { AdminRoutes, AuthenticatedRoutes } from "./ProtectedRoutes";
 import Users from "@/pages/Admin/Users";
 import ProductAdmin from "@/pages/Admin/Product";
+import Product from "@/pages/Admin/Product";
+import Login from "@/pages/Auth/Login";
+import Register from "@/pages/Auth/Register";
+import ProductsLists from "@/pages/Product/ProductsList";
+import Profile from "@/pages/Profile/Profile";
+import Orders from "@/pages/Profile/Orders";
 
 const routesConfig: RouteObject[] = [
     {
