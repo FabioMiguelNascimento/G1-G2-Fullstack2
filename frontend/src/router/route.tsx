@@ -1,6 +1,8 @@
 import App from "@/App";
 import Admin from "@/pages/Admin/Admin";
 import AdminLayout from "@/pages/Admin/AdminLayout";
+import ProductAdmin from "@/pages/Admin/Product";
+import Users from "@/pages/Admin/Users";
 import Cart from "@/pages/Cart";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
@@ -11,7 +13,6 @@ import Profile from "@/pages/Profile";
 import Register from "@/pages/Register";
 import { type RouteObject } from "react-router-dom";
 import { AdminRoutes, AuthenticatedRoutes } from "./ProtectedRoutes";
-import Users from "@/pages/Admin/Users";
 
 const routesConfig: RouteObject[] = [
   {
@@ -67,6 +68,10 @@ const routesConfig: RouteObject[] = [
                   {
                     path: "users",
                     element: <Users />
+                  },
+                  {
+                     path: "produtos",
+                    element: <ProductAdmin />
                   }
                 ]
               }

@@ -13,6 +13,7 @@ export const createProductSchema = z.object({
   discountPercentage: z.number().min(0).max(100).optional(),
   rating: z.number().min(0).max(5).optional(),
   inStock: z.boolean().optional().default(true),
+  stock: z.number(),
   isNew: z.boolean().optional().default(false),
   condition: ProductConditionEnum.optional().default('NEW'),
 
