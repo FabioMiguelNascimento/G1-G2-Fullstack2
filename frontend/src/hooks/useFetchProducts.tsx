@@ -7,19 +7,22 @@ export const useFetchProducts = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-useEffect(() => {
   const fetchProducts = async () => {
+    setLoading(true);
     try {
       const response = await api.get('/product');
       setProducts(response.data.data);
+      setError(null);
     } catch (err: any) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
-  fetchProducts();
-}, []);
 
-  return { products, loading, error };
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  return { products, loading, error, refetch: fetchProducts };
 };

@@ -4,7 +4,7 @@ import { Skeleton } from "./ui/skeleton";
 interface Column<T> {
     key: keyof T;
     header: string;
-    render?: (value: any) => React.ReactNode;
+    render?: (value: any, item: T) => React.ReactNode;
 }
 
 interface DataTableProps<T> {
@@ -12,9 +12,10 @@ interface DataTableProps<T> {
     columns: Column<T>[];
     isLoading: boolean;
     onError?: string | null;
+    onRowClick?: (data: any) => void
 }
 
-export default function DataTable<T>({ data, columns, isLoading, onError }: DataTableProps<T>) {
+export default function DataTable<T>({ data, columns, isLoading, onError, onRowClick }: DataTableProps<T>) {
     if (onError) {
         return <div>Error carregando os dados</div>;
     }
@@ -55,10 +56,10 @@ export default function DataTable<T>({ data, columns, isLoading, onError }: Data
             </TableHeader>
             <TableBody>
                 {data.map((item, rowIndex) => (
-                    <TableRow key={rowIndex}>
+                    <TableRow className={onRowClick ? "cursor-pointer" : ""} key={rowIndex} onClick={onRowClick ? () => onRowClick(item) : undefined}>
                         {columns.map((col, colIndex) => (
                             <TableCell key={colIndex}>
-                                {col.render ? col.render(item[col.key]) : String(item[col.key])}
+                                {col.render ? col.render(item[col.key], item) : String(item[col.key])}
                             </TableCell>
                         ))}
                     </TableRow>
