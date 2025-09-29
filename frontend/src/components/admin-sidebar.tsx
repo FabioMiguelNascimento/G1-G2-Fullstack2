@@ -1,6 +1,6 @@
 import {
   Package,
-  Tag,
+  ShoppingCart,
   User
 } from "lucide-react"
 import * as React from "react"
@@ -29,9 +29,9 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
         icon: User
       },
       {
-        title: "Categorias",
-        url: `${base}/categorias`,
-        icon: Tag
+        title: "Pedidos",
+        url: `${base}/pedidos`,
+        icon: ShoppingCart
       }],
   }
   return (
