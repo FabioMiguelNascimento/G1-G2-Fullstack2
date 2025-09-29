@@ -1,4 +1,5 @@
 import { createProductSchema } from "@/schemas/product.schema";
+import { parseJsonField } from "@/utils/json";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -24,21 +25,21 @@ export default function ProductModal({ open, onOpenChange, product, onSubmit }: 
         title: product?.title || "",
         description: product?.description || "",
         price: product?.price || 0,
-        withoutDiscount: product?.withoutDiscount,
-        discountPercentage: product?.discountPercentage,
-        rating: product?.rating,
+        withoutDiscount: product?.withoutDiscount ?? undefined,
+        discountPercentage: product?.discountPercentage ?? undefined,
+        rating: product?.rating ?? undefined,
         inStock: product?.inStock ?? true,
         stock: product?.stock || 0,
         isNew: product?.isNew ?? false,
         condition: product?.condition || "NEW",
-        categorys: product?.categorys || [],
-        specifications: product?.specifications || [],
-        mainFeatures: product?.mainFeatures || [],
-        colors: product?.colors || [],
+        categorys: parseJsonField<string[]>(product?.categorys, []),
+        specifications: parseJsonField<{ name: string; value: string }[]>(product?.specifications, []),
+        mainFeatures: parseJsonField<{ name: string; value: string }[]>(product?.mainFeatures, []),
+        colors: parseJsonField<string[]>(product?.colors, []),
         freeShipping: product?.freeShipping || "FREE",
         warranty: product?.warranty || "MANUFACTURER",
         returnPolicy: product?.returnPolicy || "DAYS_30",
-        includes: product?.includes || [],
+        includes: parseJsonField<{ name: string; value: string }[]>(product?.includes, []),
         tags: product?.tags || [],
     }), [product]);
     

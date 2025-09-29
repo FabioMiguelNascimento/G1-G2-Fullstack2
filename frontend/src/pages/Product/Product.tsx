@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import useFetchProduct from "@/hooks/useFetchProduct";
 import buildPrice from "@/utils/buildPrice";
 import buildStars from "@/utils/buildStars";
+import { parseJsonField } from "@/utils/json";
 import {
   BadgeCheckIcon,
   CheckCircle,
@@ -123,7 +124,8 @@ export default function Product() {
   };
 
   const buildColors = () => {
-    const colorsArr = product.colors ?? [];
+    const colorsArr = parseJsonField<string[]>(product.colors, []);
+    
     const colors = colorsArr.map((color, index) => (
       <div
         key={index}
@@ -193,7 +195,7 @@ export default function Product() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 gap-5">
-                    {(product.mainFeatures ?? []).map((item, index) => (
+                    {parseJsonField<{ name: string; value: string }[]>(product.mainFeatures, []).map((item, index) => (
                       <div key={index} className="flex">
                         <span className="text-muted-foreground">{item.name}: </span>
                         <span className="font-bold ml-auto overflow-hidden text-ellipsis whitespace-nowrap">{item.value}</span>
@@ -202,7 +204,7 @@ export default function Product() {
                   </div>
                 </CardContent>
               </Card>
-              {(product.colors ?? []).length > 0 && (
+              {parseJsonField<string[]>(product.colors, []).length > 0 && (
                 <div className="flex flex-col gap-2">
                   <h2 className="font-bold text-lg">Cores Disponíveis</h2>
                   <div className="flex gap-4">{buildColors()}</div>
@@ -304,7 +306,7 @@ export default function Product() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 gap-3">
-                  {(product.specifications ?? []).map((item, index) => (
+                  {parseJsonField<{ name: string; value: string }[]>(product.specifications, []).map((item, index) => (
                     <div key={index} className="flex">
                       <span className="text-muted-foreground">{item.name}: </span>
                       <span className="font-bold ml-auto overflow-hidden text-ellipsis whitespace-nowrap">{item.value}</span>
