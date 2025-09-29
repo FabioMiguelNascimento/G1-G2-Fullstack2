@@ -18,6 +18,7 @@ import useCartActions from '@/hooks/useCartActions';
 import useFetchUserCart from '@/hooks/useFetchUserCart';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 // Tipo para o item do carrinho baseado na estrutura real
 interface CartProduct {
@@ -344,13 +345,14 @@ export default function Cart() {
               <Button className="w-full" size="lg">
                 Finalizar Compra
               </Button>
+              <Link to="/products">
               <Button 
                 variant="outline" 
                 className="w-full"
-                onClick={() => window.location.href = '/products'}
               >
                 Continuar Comprando
               </Button>
+              </Link>
             </CardContent>
           </Card>
         </div>
