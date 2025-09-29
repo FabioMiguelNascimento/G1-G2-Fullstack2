@@ -1,6 +1,5 @@
 import type { User } from "@/types/user.type";
 import api from "@/utils/api";
-import { no } from "zod/v4/locales";
 
 interface LoginRequest {
     password:  string,
@@ -57,6 +56,36 @@ export const register = async ( data : RegisterRequest ): Promise<{ user: User |
     }
 };
 
+export const logout = async (): Promise<{ success: boolean, message: string }> => {
+    try {
+        const response = await api.post('/auth/logout');
+
+        if (response.status >= 200 && response.status < 300) {
+            return { success: true, message: 'Logout realizado com sucesso' };
+        } else {
+            return { success: false, message: response.data.message || 'Erro no logout' };
+        }
+    } catch (error: any) {
+        console.error('Logout error:', error);
+        return { success: true, message: 'Logout local realizado' };
+    }
+};
+
+export const refreshToken = async (): Promise<{ success: boolean, message: string }> => {
+    try {
+        const response = await api.post('/auth/refresh');
+
+        if (response.status >= 200 && response.status < 300) {
+            return { success: true, message: 'Tokens renovados com sucesso' };
+        } else {
+            return { success: false, message: response.data.message || 'Erro ao renovar tokens' };
+        }
+    } catch (error: any) {
+        console.error('Refresh token error:', error);
+        return { success: false, message: error.response?.data?.message || 'Erro ao renovar tokens' };
+    }
+};
+
 export const profile = async () => {
     try {
         const response = await api.get('/user/profile')
@@ -67,9 +96,9 @@ export const profile = async () => {
 
         return { user: null, message: response.data.message || 'Error ao autenticar' };
     } catch (error: any) {
-         console.error('Register error details:', error);
+         console.error('Profile error details:', error);
         if (error.response) {
-            return { user: null, message: error.response.data.message || 'Erro no registro' };
+            return { user: null, message: error.response.data.message || 'Erro ao buscar perfil' };
         } else {
             return { user: null, message: 'Erro de rede' };
         }

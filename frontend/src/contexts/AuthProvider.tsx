@@ -1,4 +1,4 @@
-import { login, profile, register } from "@/services/auth.services";
+import { login, logout, profile, register } from "@/services/auth.services";
 import type { User } from "@/types/user.type";
 import { createContext, useState, type ReactNode } from "react";
 
@@ -50,7 +50,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return await register(data);
     };
 
-    const logoutHandler = () => {
+    const logoutHandler = async () => {
+        await logout();
         setUser(null);
         localStorage.removeItem('user');
     };
