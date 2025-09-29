@@ -7,5 +7,5 @@ export interface CartItem {
         price: number
     },
     quantity: number,
-    price: number
+    total: number
 }

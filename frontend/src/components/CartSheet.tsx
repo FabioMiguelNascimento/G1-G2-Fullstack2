@@ -1,26 +1,34 @@
 import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
 } from "@/components/ui/sheet";
+import useAuthContext from "@/hooks/useAthContext";
+import useCartActions from "@/hooks/useCartActions";
+import useFetchUserCart from "@/hooks/useFetchUserCart";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useState } from "react";
 import ConfirmDialog from "./ConfirmDialog";
+import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "./ui/card";
-import { Badge } from "./ui/badge";
 
 export default function CartSheet() {
+  const { user } = useAuthContext();
+  const [refetchTrigger, setRefetchTrigger] = useState(0);
+  const { cart, loading, error } = useFetchUserCart(user?.id || null, refetchTrigger);
+  const { updateQuantity, removeFromCart, loading: actionLoading } = useCartActions();
+
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   const [dialogTitle, setDialogTitle] = useState("");
@@ -28,55 +36,27 @@ export default function CartSheet() {
   const [onCancel, setOnCancel] = useState<() => void>(() => {});
   const [onContinue, setOnContinue] = useState<() => void>(() => {});
 
-  const data = [
-    {
-      id: "prod-1",
-      title: "Computador Gamer GTX 1080 i7 16GB SSD 500GB",
-      price: 1299.99,
-      totalPrice: 2000,
-      quantity: 1,
-    },
-    {
-      id: "prod-2",
-      title: 'Monitor Gamer 27" 144Hz',
-      price: 299.99,
-      totalPrice: 2000,
-      quantity: 2,
-    },
-    {
-      id: "prod-3",
-      title: "Teclado Mecânico RGB",
-      price: 149.99,
-      totalPrice: 2000,
-      quantity: 1,
-    },
-  ];
 
-  const [quantities, setQuantities] = useState<Record<string, number>>(() => {
-    const initialQuantities: Record<string, number> = {};
-    data.forEach((prod) => {
-      initialQuantities[prod.id] = prod.quantity;
-    });
-    return initialQuantities;
-  });
 
-  const increaseQuantity = (id: string) => {
-    setQuantities((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
+  const increaseQuantity = async (id: string, currentQuantity: number) => {
+    await updateQuantity(id, currentQuantity + 1, () => setRefetchTrigger(prev => prev + 1));
   };
 
-  const decreaseQuantity = (
+  const decreaseQuantity = async (
     e: React.MouseEvent<HTMLButtonElement>,
-    id: string
+    id: string,
+    currentQuantity: number
   ) => {
     if (e.ctrlKey) {
       removeProduct(id);
       return;
     }
 
-    setQuantities((prev) => ({
-      ...prev,
-      [id]: Math.max(0, (prev[id] || 0) - 1),
-    }));
+    if (currentQuantity > 1) {
+      await updateQuantity(id, currentQuantity - 1, () => setRefetchTrigger(prev => prev + 1));
+    } else {
+      removeProduct(id);
+    }
   };
 
   const confirmDelete = (
@@ -101,12 +81,8 @@ export default function CartSheet() {
       () => {
         setDialogOpen(false);
       },
-      () => {
-        setQuantities((prev) => {
-          const newQuantities = { ...prev };
-          delete newQuantities[id];
-          return newQuantities;
-        });
+      async () => {
+        await removeFromCart(id, () => setRefetchTrigger(prev => prev + 1));
         setDialogOpen(false);
       }
     );
@@ -119,36 +95,40 @@ export default function CartSheet() {
       () => {
         setDialogOpen(false);
       },
-      () => {
-        setQuantities({});
+      async () => {
+        if (!Array.isArray(cart?.products)) return;
+        for (const item of cart.products) {
+          await removeFromCart(item.product.id, () => {});
+        }
+        setRefetchTrigger(prev => prev + 1);
         setDialogOpen(false);
       }
     );
   };
 
   const buildProducts = () => {
-    const products = data
-      .map((prod) => {
-        const quantity = quantities[prod.id] || 0;
-        const totalPrice = prod.price * quantity;
+    if (!Array.isArray(cart?.products)) return [];
 
-        if (quantity === 0) return null;
+    const products = (cart?.products || [])
+      .map((prod) => {
+        const quantity = prod.quantity;
 
         return (
-          <Card key={prod.id}>
+          <Card key={prod.product.id}>
             <CardHeader>
-              <CardTitle>{prod.title}</CardTitle>
+              <CardTitle>{prod.product.title}</CardTitle>
             </CardHeader>
             <CardContent>
-              <h2>Preço: R$ {prod.price.toFixed(2)}</h2>
-              <h2>Total: R$ {totalPrice.toFixed(2)}</h2>
+              <h2>Preço: R$ {prod.product.price.toFixed(2)}</h2>
+              <h2>Total: R$ {prod.total.toFixed(2)}</h2>
             </CardContent>
             <CardFooter className="flex justify-between items-center">
               {quantity === 1 ? (
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => removeProduct(prod.id)}
+                  onClick={() => removeProduct(prod.product.id)}
+                  disabled={actionLoading}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -156,7 +136,8 @@ export default function CartSheet() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={(e) => decreaseQuantity(e, prod.id)}
+                  onClick={(e) => decreaseQuantity(e, prod.product.id, quantity)}
+                  disabled={actionLoading}
                 >
                   <Minus className="h-4 w-4" />
                 </Button>
@@ -165,22 +146,22 @@ export default function CartSheet() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => increaseQuantity(prod.id)}
+                onClick={() => increaseQuantity(prod.product.id, quantity)}
+                disabled={actionLoading}
               >
                 <Plus className="h-4 w-4" />
               </Button>
             </CardFooter>
           </Card>
         );
-      })
-      .filter(Boolean);
+      });
 
     return products;
   };
 
-  const hasItems = Object.values(quantities).some((qty) => qty > 0);
+  const hasItems = Array.isArray(cart?.products) && cart.products.length > 0;
 
-  const totalItems = Object.values(quantities).reduce((sum, qty) => sum + qty, 0);
+  const totalItems = Array.isArray(cart?.products) ? cart.products.reduce((sum, item) => sum + item.quantity, 0) : 0;
 
   return (
     <>
@@ -201,13 +182,19 @@ export default function CartSheet() {
             </SheetDescription>
           </SheetHeader>
           <div className="overflow-y-scroll p-4 gap-4 flex flex-col">
-            {buildProducts()}
+            {loading ? (
+              <p>Carregando carrinho...</p>
+            ) : error ? (
+              <p>Erro ao carregar carrinho: {error}</p>
+            ) : (
+              buildProducts()
+            )}
           </div>
           <SheetFooter className="grid grid-cols-2 gap-4 absolute bottom-0 right-0 left-0">
             <Button
               variant="outline"
               className="cursor-pointer"
-              disabled={!hasItems}
+              disabled={!hasItems || actionLoading}
               onClick={clearCart}
             >
               Esvaziar
@@ -215,7 +202,7 @@ export default function CartSheet() {
             <Button
               variant="default"
               className="cursor-pointer"
-              disabled={!hasItems}
+              disabled={!hasItems || actionLoading}
             >
               Comprar
             </Button>

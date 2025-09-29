@@ -1,15 +1,25 @@
-import type { CartItem } from "@/types/cart.type";
 import api from "@/utils/api";
 import { useEffect, useState } from "react";
+
+interface BackendCartItem {
+  product: any;
+  quantity: number;
+  total: number;
+}
+
+interface CartResponse {
+  products: BackendCartItem[];
+  totalCart: number;
+}
 
 interface GetCartResponse {
   code: number,
   message: string,
-  data: CartItem[]
+  data: CartResponse
 }
 
-export default function useFetchUserCart(userId: string | null) {
-  const [cart, setCart] = useState<CartItem[] | null>(null);
+export default function useFetchUserCart(userId: string | null, trigger?: number) {
+  const [cart, setCart] = useState<CartResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,7 +52,7 @@ export default function useFetchUserCart(userId: string | null) {
 
     fetchCart();
     return () => controller.abort();
-  }, [userId]);
+  }, [userId, trigger]);
 
   return { cart, loading, error };
 }
