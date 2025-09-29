@@ -1,40 +1,41 @@
-import { Input } from "@/components/ui/input";
+import type { Column } from "@/components/data-table";
+import DataTable from "@/components/data-table";
+import SearchBar from "@/components/search-bar";
 import { useFetchUsers } from "@/hooks/useFetchUsers";
-import { Search } from "lucide-react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import type { User } from "@/types/user.type";
+import { useMemo, useState } from "react";
 
 interface UsersProps {} 
 export default function Users ( {}: UsersProps ) {
-    const { users } = useFetchUsers()
+    const { users, error, loading } = useFetchUsers()
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const filteredUsers = useMemo(() => {
+        if (!searchTerm) return users;
+        return users.filter(user =>
+            user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }, [users, searchTerm]);
+
+    const columns: Column<User>[] = [
+        { key: 'id', header: 'ID' },
+        { key: 'name', header: 'Nome' },
+        { key: 'email', header: 'Email' },
+        { key: 'role', header: 'Função' }
+    ];
+    
         return (
             <div>
                 <header>
-                    <div className="relative w-full ">
-                        <Input className="pl-8" placeholder="Procurar usuarios atuais" />
-                        <Search className="absolute top-1/2 left-2 -translate-y-1/2 pointer-events-none" size={18} />
-                    </div>
+                    <SearchBar
+                        placeholder="Procurar usuarios atuais"
+                        value={searchTerm}
+                        onChange={setSearchTerm}
+                    />
                 </header>
                 <div>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Name</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {users && users.length > 0 ? (
-                                users.map((user) => (
-                                    <TableRow key={user.id}>
-                                        <TableCell>{user.name}</TableCell>
-                                    </TableRow>
-                                ))
-                            ) : (
-                                <TableRow>
-                                    <TableCell>No users found</TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
+                   <DataTable data={filteredUsers} columns={columns} isLoading={loading} onError={error} />
                 </div>
             </div>
         )

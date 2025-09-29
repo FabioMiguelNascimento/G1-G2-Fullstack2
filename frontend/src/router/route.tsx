@@ -5,14 +5,13 @@ import Cart from "@/pages/Cart";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
+import Orders from "@/pages/Orders";
 import Product from "@/pages/Product";
 import ProductsLists from "@/pages/ProductsList";
 import Profile from "@/pages/Profile";
 import Register from "@/pages/Register";
-import Orders from "@/pages/Orders";
 import { type RouteObject } from "react-router-dom";
 import { AdminRoutes, AuthenticatedRoutes } from "./ProtectedRoutes";
-// import Users from "@/pages/Admin/Users";
 
 const routesConfig: RouteObject[] = [
     {
@@ -52,7 +51,7 @@ const routesConfig: RouteObject[] = [
                         children: [
                             {
                                 index: true,
-                                element: <Profile />, // padrão: /account
+                                element: <Profile />,
                             },
                             {
                                 path: "cart",
