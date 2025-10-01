@@ -58,7 +58,7 @@ export default class UserController {
 
             const newUserData = await repo.updateUser(userId, bodyData);
 
-            res.status(200).json(newUserData);
+            res.status(200).json({newUserData, code : 200, message: "Dados atualizados com sucesso"});
 
         } catch (error) {
             next(error)
