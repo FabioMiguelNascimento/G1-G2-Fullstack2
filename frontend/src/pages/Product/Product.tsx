@@ -204,9 +204,9 @@ export default function Product() {
   return (
     <>
       {product && product ? (
-        <div className="flex flex-col gap-10 ">
-          <div className="flex gap-10">
-            <section className="flex gap-4 flex-col w-2/5">
+        <div className="flex flex-col gap-10">
+          <div className="flex flex-col lg:flex-row gap-10">
+            <section className="w-full lg:w-3/5 order-1 lg:order-1 flex flex-col gap-6">
               <Card className="w-full h-104 flex items-center justify-center   ">
                 <Codesandbox width={64} height={64} />
               </Card>
@@ -230,7 +230,7 @@ export default function Product() {
                   })}
               </div>
             </section>
-            <section className="flex gap-6 flex-col w-3/5">
+            <section className="w-full lg:w-2/5 order-2 lg:order-2 flex flex-col gap-4">
               <div className="flex flex-row gap-2">{buildTags()}</div>
               <div className="text-sm flex gap-1 flex-col">
                 <h1 className="font-bold text-3xl text-gray-800 tracking-tight">

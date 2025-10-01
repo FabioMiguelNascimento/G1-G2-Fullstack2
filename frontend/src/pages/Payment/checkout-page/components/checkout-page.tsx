@@ -325,7 +325,7 @@ const CheckoutPage = () => {
                 className="w-full"
                 disabled={!formData.agreeTerms}
               >
-                Checkout Now
+                Confirmar
               </Button>
             </div>
           </div>

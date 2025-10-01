@@ -14,7 +14,6 @@ export default function Header() {
                     to="/"
                     className="flex items-center text-2xl font-bold text-white hover:text-blue-200"
                 >
-                    <img src="/logo.svg" alt="Logo" className="h-12 w-12 mr-2" />
                     OsGuriShop
                 </Link>
                 {isMobile ? (
