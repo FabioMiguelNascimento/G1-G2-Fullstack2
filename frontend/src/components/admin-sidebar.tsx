@@ -27,12 +27,8 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
         title: "Usuários",
         url: `${base}/users`,
         icon: User
-      },
-      {
-        title: "Pedidos",
-        url: `${base}/pedidos`,
-        icon: ShoppingCart
-      }],
+      }
+    ],
   }
   return (
     <Sidebar collapsible="icon" {...props} className="mt-20">
