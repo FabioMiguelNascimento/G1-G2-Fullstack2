@@ -15,6 +15,7 @@ import ProductsLists from "@/pages/Product/ProductsList";
 import Profile from "@/pages/Profile/Profile";
 import Orders from "@/pages/Profile/Orders";
 import Payment from "@/pages/Payment/page";
+import EditUser from "@/pages/Profile/EditUser";
 
 const routesConfig: RouteObject[] = [
   {
@@ -59,6 +60,10 @@ const routesConfig: RouteObject[] = [
               {
                 index: true,
                 element: <Profile />,
+              },
+              {
+                path: "edit",
+                element: <EditUser />,  
               },
               {
                 path: "cart",

@@ -13,7 +13,7 @@ import {
     RefreshCw,
     TextIcon,
 } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 
 export default function Profile() {
@@ -62,7 +62,7 @@ export default function Profile() {
           <div className="flex justify-center gap-4 mt-6">
             <Button variant="default" className="flex items-center gap-2">
               <Edit className="w-4 h-4" />
-              Editar dados
+              <Link to={`/account/${user.id}/edit`}>Editar dados</Link>
             </Button>
           </div>
         </CardHeader>
