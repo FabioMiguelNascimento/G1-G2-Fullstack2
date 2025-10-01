@@ -23,12 +23,17 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { Link } from "react-router-dom";
 
 export default function CartSheet() {
   const { user } = useAuthContext();
   const { trigger } = useCartContext();
   const { cart, loading, error } = useFetchUserCart(user?.id || null, trigger);
-  const { updateQuantity, removeFromCart, loading: actionLoading } = useCartActions();
+  const {
+    updateQuantity,
+    removeFromCart,
+    loading: actionLoading,
+  } = useCartActions();
 
   const [isDialogOpen, setDialogOpen] = useState(false);
 
@@ -36,8 +41,6 @@ export default function CartSheet() {
   const [dialogDescription, setDialogDescription] = useState("");
   const [onCancel, setOnCancel] = useState<() => void>(() => {});
   const [onContinue, setOnContinue] = useState<() => void>(() => {});
-
-
 
   const increaseQuantity = async (id: string, currentQuantity: number) => {
     await updateQuantity(id, currentQuantity + 1);
@@ -109,59 +112,60 @@ export default function CartSheet() {
   const buildProducts = () => {
     if (!Array.isArray(cart?.products)) return [];
 
-    const products = (cart?.products || [])
-      .map((prod) => {
-        const quantity = prod.quantity;
+    const products = (cart?.products || []).map((prod) => {
+      const quantity = prod.quantity;
 
-        return (
-          <Card key={prod.product.id}>
-            <CardHeader>
-              <CardTitle>{prod.product.title}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <h2>Preço: R$ {prod.product.price.toFixed(2)}</h2>
-              <h2>Total: R$ {prod.total.toFixed(2)}</h2>
-            </CardContent>
-            <CardFooter className="flex justify-between items-center">
-              {quantity === 1 ? (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => removeProduct(prod.product.id)}
-                  disabled={actionLoading}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={(e) => decreaseQuantity(e, prod.product.id, quantity)}
-                  disabled={actionLoading}
-                >
-                  <Minus className="h-4 w-4" />
-                </Button>
-              )}
-              <span className="font-medium">{quantity}</span>
+      return (
+        <Card key={prod.product.id}>
+          <CardHeader>
+            <CardTitle>{prod.product.title}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <h2>Preço: R$ {prod.product.price.toFixed(2)}</h2>
+            <h2>Total: R$ {prod.total.toFixed(2)}</h2>
+          </CardContent>
+          <CardFooter className="flex justify-between items-center">
+            {quantity === 1 ? (
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => increaseQuantity(prod.product.id, quantity)}
+                onClick={() => removeProduct(prod.product.id)}
                 disabled={actionLoading}
               >
-                <Plus className="h-4 w-4" />
+                <Trash2 className="h-4 w-4" />
               </Button>
-            </CardFooter>
-          </Card>
-        );
-      });
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={(e) => decreaseQuantity(e, prod.product.id, quantity)}
+                disabled={actionLoading}
+              >
+                <Minus className="h-4 w-4" />
+              </Button>
+            )}
+            <span className="font-medium">{quantity}</span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => increaseQuantity(prod.product.id, quantity)}
+              disabled={actionLoading}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </CardFooter>
+        </Card>
+      );
+    });
 
     return products;
   };
 
   const hasItems = Array.isArray(cart?.products) && cart.products.length > 0;
 
-  const totalItems = Array.isArray(cart?.products) ? cart.products.reduce((sum, item) => sum + item.quantity, 0) : 0;
+  const totalItems = Array.isArray(cart?.products)
+    ? cart.products.reduce((sum, item) => sum + item.quantity, 0)
+    : 0;
 
   return (
     <>
@@ -204,7 +208,7 @@ export default function CartSheet() {
               className="cursor-pointer"
               disabled={!hasItems || actionLoading}
             >
-              Comprar
+              <Link to={'/payment'}>Comprar</Link>
             </Button>
           </SheetFooter>
         </SheetContent>

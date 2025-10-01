@@ -14,84 +14,89 @@ import Register from "@/pages/Auth/Register";
 import ProductsLists from "@/pages/Product/ProductsList";
 import Profile from "@/pages/Profile/Profile";
 import Orders from "@/pages/Profile/Orders";
+import Payment from "@/pages/Payment/page";
 
 const routesConfig: RouteObject[] = [
-    {
-        path: "/",
-        element: <App />,
+  {
+    path: "/",
+    element: <App />,
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+      {
+        path: "*",
+        element: <NotFound />,
+      },
+      {
+        path: "product/:id",
+        element: <Product />,
+      },
+      {
+        path: "products",
+        element: <ProductsLists />,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "payment",
+        element: <Payment />,
+      },
+      {
+        path: "register",
+        element: <Register />,
+      },
+      {
+        element: <AuthenticatedRoutes />,
         children: [
-            {
+          {
+            path: "/account/:userId",
+            element: <Account />,
+            children: [
+              {
                 index: true,
-                element: <Home />,
-            },
-            {
-                path: "*",
-                element: <NotFound />,
-            },
-            {
-                path: "product/:id",
-                element: <Product />,
-            },
-            {
-                path: "products",
-                element: <ProductsLists />,
-            },
-            {
-                path: "login",
-                element: <Login />,
-            },
-            {
-                path: "register",
-                element: <Register />,
-            },
-            {
-                element: <AuthenticatedRoutes />,
+                element: <Profile />,
+              },
+              {
+                path: "cart",
+                element: <Cart />,
+              },
+              {
+                path: "orders",
+                element: <Orders />,
+              },
+            ],
+          },
+          {
+            element: <AdminRoutes />,
+            children: [
+              {
+                path: "admin",
+                element: <AdminLayout />,
                 children: [
-                    {
-                        path: "/account/:userId",
-                        element: <Account />,
-                        children: [
-                            {
-                                index: true,
-                                element: <Profile />,
-                            },
-                            {
-                                path: "cart",
-                                element: <Cart />,
-                            },
-                            {
-                                path: "orders",
-                                element: <Orders />,
-                            }
-                        ],
-                    },
-                    {
-                        element: <AdminRoutes />,
-                        children: [
-                            {
-                                path: "admin",
-                                element: <AdminLayout />,
-                                children: [
-                                    {
-                                        index: true,
-                                        element: <AdminLayout />,
-                                    },
-                                    {
-                                        path: 'users',
-                                        element: <Users />
-                                    },
-                                    {
-                                        path: 'produtos',
-                                        element: <ProductAdmin />
-                                    }
-                                ],
-                            },
-                        ],
-                    },
+                  {
+                    index: true,
+                    element: <AdminLayout />,
+                  },
+                  {
+                    path: "users",
+                    element: <Users />,
+                  },
+                  {
+                    path: "produtos",
+                    element: <ProductAdmin />,
+                  },
                 ],
-            },
+              },
+            ],
+          },
         ],
-    },
+      },
+    ],
+  },
 ];
 
 export default routesConfig;
