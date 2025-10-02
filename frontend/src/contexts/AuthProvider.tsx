@@ -51,9 +51,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const logoutHandler = async () => {
-        await logout();
-        setUser(null);
-        localStorage.removeItem('user');
+        try {
+            await logout();
+        } catch (error) {
+            console.error('Erro no logout:', error);
+        } finally {
+            setUser(null);
+            localStorage.removeItem('user');
+            document.cookie = "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+        }
     };
 
     const value = {

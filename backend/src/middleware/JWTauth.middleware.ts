@@ -29,6 +29,7 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
                 const refreshDecoded = verifyRefreshToken(refreshToken);
                 
                 const user = await repo.findUserByRefreshToken(refreshToken);
+
                 if (!user || user.id !== refreshDecoded.id) {
                     throw new UnauthorizedError("Refresh token inválido");
                 }

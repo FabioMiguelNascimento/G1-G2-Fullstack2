@@ -1,10 +1,10 @@
 import z from 'zod';
-import { passwordSchema } from './auth.schema.ts';
+import { optionalPasswordSchema, passwordSchema } from './auth.schema.ts';
 
 export const updateSchema = z.object({
     name: z.string().min(1).optional(),
     email: z.email().optional(),
-    password: passwordSchema.optional()
+    password: optionalPasswordSchema.optional()
 });
 
 export type UpdateInput = z.infer<typeof updateSchema>

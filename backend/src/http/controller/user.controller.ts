@@ -14,6 +14,7 @@ export default class UserController {
             if (!user)
                 throw new NotFoundError("Usuário não encontrado");
 
+
             res.status(200).json(viewResponse.getUserData(user));
         } catch (error) {
             next(error)
@@ -51,7 +52,7 @@ export default class UserController {
         try {
             const userId = req.userId;
             const bodyData = req.validatedData;
-            console.log(bodyData)
+
             const user = repo.findUserById(userId);
             if (!user)
                 throw new NotFoundError("Usuário não encontrado");

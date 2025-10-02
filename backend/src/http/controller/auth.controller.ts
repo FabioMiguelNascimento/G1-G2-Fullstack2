@@ -117,18 +117,30 @@ export default class AuthController{
 
     logout = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const refreshToken = req.cookies?.refreshToken;
-
-            if (refreshToken) {
-                await repo.updateRefreshToken(req.userId!, null)
+            const userId = req.userId;
+            
+            if (userId) {
+                await repo.updateRefreshToken(userId, null);
             }
-
-            res.clearCookie('token');
-            res.clearCookie('refreshToken');
-
-            res.status(200).json({ message: "Logout realizado com sucesso" });
-        } catch (err) {
-            next(err)
+            
+            res.clearCookie('refreshToken', {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict'
+            });
+            
+            res.clearCookie('token', {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict'
+            });
+            
+            res.status(200).json({
+                code: 200,
+                message: "Logout realizado com sucesso"
+            });
+        } catch (error) {
+            next(error);
         }
     }
 }

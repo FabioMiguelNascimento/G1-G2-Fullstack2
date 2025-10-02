@@ -25,7 +25,7 @@ export default function useFetchUser(userId: string | null) {
       try {
         setLoading(true);
         setError(null);
-        const response = await api.get<GetUserResponse>(`/user/profile/${userId}`, {
+        const response = await api.get<GetUserResponse>(`/user/profile/`, {
           signal: controller.signal,
         });
         setUser(response.data.data);
