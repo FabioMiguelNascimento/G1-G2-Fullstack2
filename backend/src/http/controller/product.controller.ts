@@ -1,5 +1,5 @@
 import { NotFoundError } from "@/error/httpErros.js";
-import { CreateProductInput, UpdateProducInput } from "@/schema/product.schema.js";
+import { CreateProductInput, UpdateProducInput, getProductSchema } from "@/schema/product.schema.js";
 import { NextFunction, Request, Response } from "express";
 import ProductRepository from "../repository/product.repo.js";
 import ProductResponse from "../views/product.view.js";

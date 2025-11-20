@@ -72,6 +72,10 @@ export default class ProductRepository implements IProduct {
             where.isNew = filters.isNew === 'true';
         }
 
+        if (filters?.supplierId) {
+            where.supplierId = filters.supplierId;
+        }
+
         return await prisma.product.findMany({
             where
         });
