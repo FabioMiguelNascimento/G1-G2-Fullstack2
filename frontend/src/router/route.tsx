@@ -16,6 +16,7 @@ import Profile from "@/pages/Profile/Profile";
 import Orders from "@/pages/Profile/Orders";
 import Payment from "@/pages/Payment/page";
 import EditUser from "@/pages/Profile/EditUser";
+import Suppliers from "@/pages/Admin/Suppliers";
 
 const routesConfig: RouteObject[] = [
   {
@@ -93,6 +94,10 @@ const routesConfig: RouteObject[] = [
                   {
                     path: "produtos",
                     element: <ProductAdmin />,
+                  },
+                  {
+                    path: "suppliers",
+                    element: <Suppliers />,
                   },
                 ],
               },

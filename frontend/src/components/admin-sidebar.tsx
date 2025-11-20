@@ -27,6 +27,11 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
         title: "Usuários",
         url: `${base}/users`,
         icon: User
+      },
+      {
+        title: "Fornecedores",
+        url: `${base}/suppliers`,
+        icon: ShoppingCart
       }
     ],
   }
