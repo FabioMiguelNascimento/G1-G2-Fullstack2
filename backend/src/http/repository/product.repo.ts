@@ -5,8 +5,13 @@ import IProduct from "../interface/product.interface.js";
 
 export default class ProductRepository implements IProduct {
     async create(data: CreateProductInput, userId: string): Promise<Product> {
+        const { supplierId, ...productData } = data;
         return await prisma.product.create({
-            data: {...data, userId}
+            data: {
+                ...productData,
+                userId,
+                supplier: supplierId ? { connect: { id: supplierId } } : undefined,
+            }
         })
     }
 
@@ -76,7 +81,14 @@ export default class ProductRepository implements IProduct {
         return await prisma.product.findUnique({where: {id : id}});
     }
 
-    async updateProduct(id: string, data: UpdateProducInput): Promise<Product | null> {
-        return await prisma.product.update({where: {id: id}, data: data})
+    async update(id: string, data: UpdateProducInput): Promise<Product> {
+        const { supplierId, ...productData } = data;
+        return await prisma.product.update({
+            where: { id: id },
+            data: {
+                ...productData,
+                supplier: supplierId ? { connect: { id: supplierId } } : undefined,
+            }
+        })
     }
 }

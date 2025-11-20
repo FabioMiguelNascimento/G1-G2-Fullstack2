@@ -88,6 +88,8 @@ model Product {
   returnPolicy ReturnPolicy @default(DAYS_30)
 
   userId      String
+  supplierId  String?
+  supplier    Supplier? @relation(fields: [supplierId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -130,4 +132,17 @@ model ProductInOrder {
   assignedBy String
 
   @@id([productId, orderId])
+}
+
+model Supplier {
+  id      String    @id @default(uuid()) @unique
+  name    String
+  email   String    @unique
+  phone   String?
+  address String?
+
+  products Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

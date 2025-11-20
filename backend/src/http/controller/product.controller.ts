@@ -15,18 +15,18 @@ export default class ProductController {
 
     update = async (req:Request, res: Response, next: NextFunction) => {
         try {
-            const { id } = req.validatedData;
+            const { id } = req.params;
             const editedProduct: UpdateProducInput = req.validatedData;
 
             const oldProduct = await this.repo.getById(id);
 
             if(!oldProduct) throw new NotFoundError('Produto não encontrado com esse ID')
 
-            const newProductData = await this.repo.updateProduct(id, editedProduct);
+            const newProductData = await this.repo.update(id, editedProduct);
 
             res.status(200).json(newProductData);
         } catch (error) {
-            
+            next(error)
         }
     }
 

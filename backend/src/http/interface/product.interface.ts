@@ -1,4 +1,4 @@
-import { CreateProductInput } from "@/schema/product.schema.js";
+import { CreateProductInput, UpdateProducInput } from "@/schema/product.schema.js";
 import { Id } from "@/schema/utils/id.schema.js";
 import { Product } from "@prisma/client";
 
@@ -8,4 +8,5 @@ export default interface IProduct {
     findByid(id: string): Promise<Product | null>
     getAll(): Promise<Product[] | null>
     getById(id: string): Promise<Product | null>
+    update(id: string, data: UpdateProducInput): Promise<Product>
 }

@@ -33,6 +33,7 @@ export const createProductSchema = z.object({
         name: z.string(),
         value: z.string(),
     })).optional(),
+    supplierId: z.string().optional(),
 })
 
 export type CreateProductInput = z.infer<typeof createProductSchema>
