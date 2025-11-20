@@ -45,6 +45,10 @@ export default function DataTable<T>({ data, columns, isLoading, onError, onRowC
         );
     }
 
+    if (!Array.isArray(data)) {
+        return <div>Nenhum dado disponível</div>;
+    }
+
     return (
         <Table>
             <TableHeader>
