@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { useFetchSupplierProducts } from "@/hooks/useFetchSupplierProducts";
 import { type Product } from "@/schemas/product.schema";
+import { useNavigate } from "react-router-dom";
 
 interface SupplierProductsModalProps {
     open: boolean;
@@ -17,9 +18,14 @@ interface SupplierProductsModalProps {
 
 export default function SupplierProductsModal({ open, onOpenChange, supplierId }: SupplierProductsModalProps) {
     const { products, loading, error } = useFetchSupplierProducts(supplierId);
+    const navigate = useNavigate();
+
+    const handleRowClick = (product: Product) => {
+        navigate(`/product/${product.id}`);
+    };
 
     const columns: Column<Product>[] = [
-        { key: 'id', header: 'ID' },
+        { key: 'id', header: 'ID', shorten: 8 },
         { key: 'title', header: 'Título' },
         { key: 'price', header: 'Preço' },
         { key: 'stock', header: 'Estoque' },
@@ -27,14 +33,14 @@ export default function SupplierProductsModal({ open, onOpenChange, supplierId }
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-4xl">
+            <DialogContent className="max-w-6xl">
                 <DialogHeader>
                     <DialogTitle>Produtos do Fornecedor</DialogTitle>
                     <DialogDescription>
                         Lista de produtos associados a este fornecedor.
                     </DialogDescription>
                 </DialogHeader>
-                <DataTable columns={columns} data={products} isLoading={loading} onError={error} />
+                <DataTable columns={columns} data={products} isLoading={loading} onError={error} onRowClick={handleRowClick} />
             </DialogContent>
         </Dialog>
     );

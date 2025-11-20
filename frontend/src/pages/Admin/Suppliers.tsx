@@ -99,7 +99,7 @@ export default function Suppliers() {
     };
 
     const columns: Column<Supplier>[] = [
-       { key: 'id', header: 'ID' },
+       { key: 'id', header: 'ID', shorten: 8 },
        { key: 'name', header: 'Nome' },
        { key: 'email', header: 'Email' },
        { key: 'phone', header: 'Telefone' },

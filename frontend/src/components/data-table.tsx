@@ -5,6 +5,7 @@ interface Column<T> {
     key: keyof T;
     header: string;
     render?: (value: any, item: T) => React.ReactNode;
+    shorten?: number;
 }
 
 interface DataTableProps<T> {
@@ -63,7 +64,7 @@ export default function DataTable<T>({ data, columns, isLoading, onError, onRowC
                     <TableRow className={onRowClick ? "cursor-pointer" : ""} key={rowIndex} onClick={onRowClick ? () => onRowClick(item) : undefined}>
                         {columns.map((col, colIndex) => (
                             <TableCell key={colIndex}>
-                                {col.render ? col.render(item[col.key], item) : String(item[col.key])}
+                                {col.render ? col.render(item[col.key], item) : col.shorten ? String(item[col.key]).substring(0, col.shorten) : String(item[col.key])}
                             </TableCell>
                         ))}
                     </TableRow>
