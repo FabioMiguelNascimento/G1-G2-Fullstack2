@@ -1,3 +1,4 @@
+import { useCartContext } from '@/contexts/CartContext';
 import useAuthContext from '@/hooks/useAthContext';
 import api from '@/utils/api';
 import { useState } from 'react';
@@ -26,6 +27,7 @@ interface UseCartActionsReturn {
 
 export default function useCartActions(): UseCartActionsReturn {
   const { user } = useAuthContext();
+  const { refetchCart } = useCartContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,7 +51,8 @@ export default function useCartActions(): UseCartActionsReturn {
       const response = await api.put<CartActionResponse>('/cart/', data);
 
       if (response.data.code === 200) {
-        onSuccess?.(); // Chama callback de sucesso
+        onSuccess?.();
+        refetchCart();
         return true;
       } else {
         throw new Error(response.data.message || 'Erro ao atualizar quantidade');
@@ -80,7 +83,8 @@ export default function useCartActions(): UseCartActionsReturn {
       const response = await api.delete<CartActionResponse>(`/cart/${productId}`);
 
       if (response.data.code === 200) {
-        onSuccess?.(); // Chama callback de sucesso
+        onSuccess?.();
+        refetchCart();
         return true;
       } else {
         throw new Error(response.data.message || 'Erro ao remover produto');

@@ -1,3 +1,4 @@
+import { useCartContext } from '@/contexts/CartContext';
 import useAuthContext from '@/hooks/useAthContext';
 import api from '@/utils/api';
 import { useState } from 'react';
@@ -26,18 +27,17 @@ interface UseAddToCartReturn {
 
 export default function useAddToCart(): UseAddToCartReturn {
   const { user } = useAuthContext();
+  const { refetchCart } = useCartContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
   const addToCart = async (productId: string, quantity: number = 1): Promise<boolean> => {
-    // Verificar se usuário está logado
     if (!user) {
       setError('Você precisa estar logado para adicionar produtos ao carrinho');
       return false;
     }
 
-    // Validar dados
     if (!productId || quantity <= 0) {
       setError('Dados inválidos para adicionar ao carrinho');
       return false;
@@ -58,6 +58,7 @@ export default function useAddToCart(): UseAddToCartReturn {
       if (response.data.code === 200 || response.data.code === 201) {
         setSuccess(true);
         setError(null);
+        refetchCart();
         
         return true;
       } else {
