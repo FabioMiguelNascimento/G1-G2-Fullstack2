@@ -46,15 +46,14 @@ async function main() {
         isNew: faker.datatype.boolean(),
         condition: faker.helpers.arrayElement(Object.values(ProductCondition)),
         categorys: [faker.commerce.department(), faker.commerce.department()],
-        specifications: {
-          weight: faker.number.int({ min: 1, max: 100 }),
-          dimensions: {
-            width: faker.number.int({ min: 1, max: 100 }),
-            height: faker.number.int({ min: 1, max: 100 }),
-            depth: faker.number.int({ min: 1, max: 100 }),
-          },
-        },
-        mainFeatures: [faker.lorem.sentence(), faker.lorem.sentence()],
+        specifications: [
+          { name: 'Weight', value: `${faker.number.int({ min: 1, max: 100 })}g` },
+          { name: 'Dimensions', value: `${faker.number.int({ min: 1, max: 100 })}x${faker.number.int({ min: 1, max: 100 })}x${faker.number.int({ min: 1, max: 100 })}cm` },
+        ],
+        mainFeatures: [
+            { name: 'Feature 1', value: faker.lorem.sentence() },
+            { name: 'Feature 2', value: faker.lorem.sentence() },
+        ],
         colors: [faker.color.human(), faker.color.human()],
         includes: [faker.lorem.word(), faker.lorem.word()],
         freeShipping: faker.helpers.arrayElement(Object.values(ShippingOption)),

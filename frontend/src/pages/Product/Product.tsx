@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import useFetchProduct from "@/hooks/useFetchProduct";
 import buildPrice from "@/utils/buildPrice";
 import buildStars from "@/utils/buildStars";
@@ -29,8 +30,6 @@ import {
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { useCartContext } from "@/contexts/CartContext";
-import useAddToCart from "@/hooks/useAddToCart";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
   Form,
@@ -41,10 +40,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useCartContext } from "@/contexts/CartContext";
+import useAddToCart from "@/hooks/useAddToCart";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import axios from "axios";
 
 const tagIconMap: Record<string, any> = {
   destaque: BadgeCheckIcon,
@@ -52,12 +53,117 @@ const tagIconMap: Record<string, any> = {
   fretegratis: Truck,
 };
 
+function ProductSkeleton() {
+  return (
+    <div className="flex flex-col gap-10">
+      <div className="flex flex-col lg:flex-row gap-10">
+        <section className="w-full lg:w-3/5 order-1 lg:order-1 flex flex-col gap-6">
+          <Skeleton className="w-full h-104" />
+          <div className="flex flex-row gap-4 justify-center items-center">
+            <Skeleton className="w-32 h-32" />
+            <Skeleton className="w-32 h-32" />
+            <Skeleton className="w-32 h-32" />
+          </div>
+        </section>
+
+        <section className="w-full lg:w-2/5 order-2 lg:order-2 flex flex-col gap-4">
+          <div className="flex flex-row gap-2">
+            <Skeleton className="h-6 w-24" />
+            <Skeleton className="h-6 w-20" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-8 w-3/4" />
+            <Skeleton className="h-5 w-32" />
+          </div>
+          <Skeleton className="h-12 w-40" />
+          
+          <Card className="flex flex-col gap-4">
+            <CardHeader className="justify-start items-start mb-5">
+              <Skeleton className="h-6 w-64" />
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-5">
+                {[...Array(6)].map((_, i) => (
+                  <Skeleton key={i} className="h-5 w-full" />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-6 w-40" />
+            <div className="flex gap-4">
+              <Skeleton className="w-16 h-16 rounded-full" />
+              <Skeleton className="w-16 h-16 rounded-full" />
+              <Skeleton className="w-16 h-16 rounded-full" />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-6 w-32" />
+            <div className="flex items-center gap-3">
+              <Skeleton className="h-9 w-9" />
+              <Skeleton className="h-9 w-20" />
+              <Skeleton className="h-9 w-9" />
+              <Skeleton className="h-5 w-24 ml-2" />
+            </div>
+          </div>
+
+          <div className="flex gap-4 flex-col">
+            <div className="flex gap-2">
+              <Skeleton className="h-10 flex-1" />
+              <Skeleton className="h-10 w-10" />
+              <Skeleton className="h-10 w-10" />
+            </div>
+            <Skeleton className="h-10 w-full" />
+          </div>
+
+          <div className="w-full h-[1px] bg-border"></div>
+          
+          <div className="flex self-center justify-center items-center gap-4">
+            <Skeleton className="h-16 w-24" />
+            <Skeleton className="h-16 w-24" />
+            <Skeleton className="h-16 w-24" />
+          </div>
+        </section>
+      </div>
+
+      <div className="flex gap-10 h-full">
+        <Card className="w-2/5 h-full flex flex-col">
+          <CardHeader className="justify-start items-start mb-5">
+            <Skeleton className="h-6 w-48" />
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 gap-3">
+              {[...Array(8)].map((_, i) => (
+                <Skeleton key={i} className="h-5 w-full" />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="w-3/5 h-full flex flex-col">
+          <CardHeader className="justify-start items-start mb-5">
+            <Skeleton className="h-6 w-32" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {[...Array(6)].map((_, i) => (
+                <Skeleton key={i} className="h-4 w-full" />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
 export default function Product() {
   const { id } = useParams();
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const { product } = useFetchProduct(id ?? null);
-  const { addToCart, loading } = useAddToCart();
+  const { product, loading } = useFetchProduct(id ?? null);
+  const { addToCart, loading: loadingCart } = useAddToCart();
   const { refetchCart } = useCartContext();
 
   const formSchema = z.object({
@@ -97,6 +203,10 @@ export default function Product() {
    if (valuesExists) {
       redirect("/payment");
     } 
+  }
+
+  if (loading) {
+    return <ProductSkeleton />;
   }
 
   if (!product) {
@@ -276,7 +386,6 @@ export default function Product() {
                 </div>
               )}
 
-              {/* Seletor de Quantidade */}
               <div className="flex flex-col gap-2">
                 <Label htmlFor="quantity" className="font-bold text-lg">
                   Quantidade
@@ -445,13 +554,11 @@ export default function Product() {
                         `${quantity} produto(s) adicionado(s) ao carrinho!`
                       );
                       refetchCart();
-                      // Opcional: Resetar quantidade para 1 após adicionar
-                      // setQuantity(1);
                     }
                   }}
-                  disabled={!product.inStock || loading}
+                  disabled={!product.inStock || loadingCart}
                 >
-                  {loading
+                  {loadingCart
                     ? "Adicionando..."
                     : product.inStock
                     ? `Adicionar ${quantity} ao Carrinho`

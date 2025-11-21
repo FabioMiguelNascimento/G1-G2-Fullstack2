@@ -1,6 +1,6 @@
 import type { Product } from "@/schemas/product.schema";
 import api from "@/utils/api";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface GetProductResponse {
   code: number,
@@ -10,27 +10,23 @@ interface GetProductResponse {
 
 export default function useFetchProduct(id: string | null) {
   const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!id) {
-      setProduct(null);
-      setLoading(false);
-      return;
-    }
-
-    const controller = new AbortController();
     const fetchProduct = async () => {
+      if (!id) {
+        setProduct(null);
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
         setError(null);
-        const response = await api.get<GetProductResponse>(`/product/${id}`, {
-          signal: controller.signal,
-        });
+        const response = await api.get<GetProductResponse>(`/product/${id}`);
         setProduct(response.data.data);
       } catch (err: any) {
-        if (err.name === "CanceledError" || err.name === "AbortError") return;
         console.error(err);
         setError(err?.message ?? "Erro ao carregar produto");
       } finally {
@@ -39,7 +35,6 @@ export default function useFetchProduct(id: string | null) {
     };
 
     fetchProduct();
-    return () => controller.abort();
   }, [id]);
 
   return { product, loading, error };
