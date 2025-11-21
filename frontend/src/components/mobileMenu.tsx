@@ -1,25 +1,9 @@
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
     NavigationMenu,
     NavigationMenuItem,
     NavigationMenuLink,
     NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import {
-    ChevronsUpDown,
-    Heart,
-    LogOut,
-    MenuIcon,
-    Package,
-    ShoppingCart,
-    User,
-} from "lucide-react";
 import {
     Sheet,
     SheetContent,
@@ -28,10 +12,12 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+    MenuIcon
+} from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import CartSheet from "./CartSheet";
-import { Avatar, AvatarFallback } from "./ui/avatar";
-import { useState } from "react";
 import { Button } from "./ui/button";
 import UserDropdownMenu from "./UserDropdownMenu";
 

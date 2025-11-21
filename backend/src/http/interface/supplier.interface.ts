@@ -1,5 +1,5 @@
+import { createSupplierSchema, updateSupplierSchema } from "@/schema/supplier.schema.js";
 import { Supplier } from "@prisma/client";
-import { createSupplierSchema, updateSupplierSchema } from "../../schema/supplier.schema";
 import { z } from "zod";
 
 export interface ISupplier {

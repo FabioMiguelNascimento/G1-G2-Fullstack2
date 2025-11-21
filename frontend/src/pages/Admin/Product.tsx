@@ -53,7 +53,7 @@ export default function ProductAdmin ( {}: ProductAdminProps ) {
                 toast('Produto criado com sucesso!');
             }
             setSelectedProduct(undefined);
-            refetch();
+            refetch({});
         } catch (error) {
             console.error(error);
             toast('Erro ao salvar produto');
@@ -75,7 +75,7 @@ export default function ProductAdmin ( {}: ProductAdminProps ) {
             try {
                 await remove.mutate(productToDelete);
                 toast('Produto deletado com sucesso!');
-                refetch();
+                refetch({});
             } catch (error) {
                 console.error(error);
                 toast('Erro ao deletar produto');
@@ -98,7 +98,7 @@ export default function ProductAdmin ( {}: ProductAdminProps ) {
        { key: 'stock', header: 'Em Estoque' },
        { key: 'isNew', header: 'Novo' },
        { key: 'rating', header: 'Avaliacao' },
-       { key: 'actions', header: 'Ações', render: (value, item) => (
+       { key: 'actions', header: 'Ações', render: (_, item) => (
            <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
                <AlertDialogTrigger asChild>
                    <Button variant="destructive" size="sm" type="button" disabled={remove.loading} onClick={(e) => { e.stopPropagation(); handleDeleteClick(item.id); }}>

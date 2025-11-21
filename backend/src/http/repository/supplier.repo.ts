@@ -1,7 +1,7 @@
+import { createSupplierSchema, updateSupplierSchema } from "@/schema/supplier.schema.js";
 import { PrismaClient, Supplier } from "@prisma/client";
-import { ISupplier } from "../interface/supplier.interface";
-import { createSupplierSchema, updateSupplierSchema } from "../../schema/supplier.schema";
 import { z } from "zod";
+import { ISupplier } from "../interface/supplier.interface.js";
 
 const prisma = new PrismaClient();
 
