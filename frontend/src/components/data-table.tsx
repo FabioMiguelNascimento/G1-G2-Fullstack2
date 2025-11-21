@@ -2,7 +2,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Skeleton } from "./ui/skeleton";
 
 interface Column<T> {
-    key: keyof T;
+    key: keyof T | string;
     header: string;
     render?: (value: any, item: T) => React.ReactNode;
     shorten?: number;
@@ -64,7 +64,7 @@ export default function DataTable<T>({ data, columns, isLoading, onError, onRowC
                     <TableRow className={onRowClick ? "cursor-pointer" : ""} key={rowIndex} onClick={onRowClick ? () => onRowClick(item) : undefined}>
                         {columns.map((col, colIndex) => (
                             <TableCell key={colIndex}>
-                                {col.render ? col.render(item[col.key], item) : col.shorten ? String(item[col.key]).substring(0, col.shorten) : String(item[col.key])}
+                                {col.render ? col.render((item as any)[col.key], item) : col.shorten ? String((item as any)[col.key]).substring(0, col.shorten) : String((item as any)[col.key])}
                             </TableCell>
                         ))}
                     </TableRow>

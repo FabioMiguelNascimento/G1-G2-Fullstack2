@@ -104,14 +104,14 @@ export default function Suppliers() {
        { key: 'email', header: 'Email' },
        { key: 'phone', header: 'Telefone' },
        { key: 'address', header: 'Endereço' },
-       { key: 'actions', header: 'Ações', render: (value, item) => (
+       { key: 'actions', header: 'Ações', render: (_, item) => (
            <div className="flex gap-2">
-               <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleViewProducts(item.id); }}>
+               <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleViewProducts(item.id); }} aria-label="Visualizar produtos">
                    <Eye className="h-4 w-4" />
                </Button>
                <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
                    <AlertDialogTrigger asChild>
-                       <Button variant="destructive" size="sm" type="button" disabled={remove.loading} onClick={(e) => { e.stopPropagation(); handleDeleteClick(item.id); }}>
+                       <Button variant="destructive" size="sm" type="button" disabled={remove.loading} onClick={(e) => { e.stopPropagation(); handleDeleteClick(item.id); }} aria-label="Deletar fornecedor">
                            {remove.loading ? <Spinner /> : <Trash />}
                        </Button>
                    </AlertDialogTrigger>
