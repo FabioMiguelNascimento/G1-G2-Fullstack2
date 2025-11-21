@@ -1,22 +1,23 @@
 import App from "@/App";
-import Account from "@/pages/Profile/Account";
 import AdminLayout from "@/pages/Admin/AdminLayout";
-import Cart from "@/pages/Profile/Cart";
-import Home from "@/pages/Home";
-import NotFound from "@/pages/NotFound";
-import { type RouteObject } from "react-router-dom";
-import { AdminRoutes, AuthenticatedRoutes } from "./ProtectedRoutes";
-import Users from "@/pages/Admin/Users";
+import Dashboard from "@/pages/Admin/Dashboard";
 import ProductAdmin from "@/pages/Admin/Product";
-import Product from "@/pages/Product/Product";
+import Suppliers from "@/pages/Admin/Suppliers";
+import Users from "@/pages/Admin/Users";
 import Login from "@/pages/Auth/Login";
 import Register from "@/pages/Auth/Register";
-import ProductsLists from "@/pages/Product/ProductsList";
-import Profile from "@/pages/Profile/Profile";
-import Orders from "@/pages/Profile/Orders";
+import Home from "@/pages/Home";
+import NotFound from "@/pages/NotFound";
 import Payment from "@/pages/Payment/page";
+import Product from "@/pages/Product/Product";
+import ProductsLists from "@/pages/Product/ProductsList";
+import Account from "@/pages/Profile/Account";
+import Cart from "@/pages/Profile/Cart";
 import EditUser from "@/pages/Profile/EditUser";
-import Suppliers from "@/pages/Admin/Suppliers";
+import Orders from "@/pages/Profile/Orders";
+import Profile from "@/pages/Profile/Profile";
+import { type RouteObject } from "react-router-dom";
+import { AdminRoutes, AuthenticatedRoutes } from "./ProtectedRoutes";
 
 const routesConfig: RouteObject[] = [
   {
@@ -86,6 +87,10 @@ const routesConfig: RouteObject[] = [
                   {
                     index: true,
                     element: <AdminLayout />,
+                  },
+                  {
+                    path: "dashboard",
+                    element: <Dashboard />,
                   },
                   {
                     path: "users",

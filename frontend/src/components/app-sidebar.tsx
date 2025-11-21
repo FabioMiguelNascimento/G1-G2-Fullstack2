@@ -1,17 +1,17 @@
 "use client";
 
-import { User as UserIcon, ShoppingCart, Package, Shield } from "lucide-react";
+import { Package, Shield, ShoppingCart, User as UserIcon } from "lucide-react";
 import * as React from "react";
 
 import { NavMain } from "@/components/nav-main";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenuButton,
-  SidebarRail,
-  SidebarTrigger,
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarMenuButton,
+    SidebarRail,
+    SidebarTrigger,
 } from "@/components/ui/sidebar";
 
 import useAuthContext from "@/hooks/useAthContext";
@@ -53,7 +53,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {isAdmin && (
         <SidebarFooter>
             <SidebarMenuButton asChild>
-              <Link to="/admin">
+              <Link to="/admin/dashboard">
                 <Shield />
                 Area admin
               </Link>
