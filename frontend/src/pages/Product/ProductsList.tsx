@@ -2,8 +2,12 @@ import { ProductCard, ProductsGridSkeleton } from "@/components/ProductCard";
 import SearchBar from "@/components/search-bar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useFetchProducts } from "@/hooks/useFetchProducts";
-import { Filter, Grid3X3, Package, Search, ShoppingBag } from "lucide-react";
+import { useProductFilters } from "@/hooks/useProductFilters";
+import { ChevronDown, Filter, Grid3X3, Package, Search, ShoppingBag, X } from "lucide-react";
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -12,18 +16,39 @@ export default function ProductsLists() {
   const [searchTerm, setSearchTerm] = useState(searchParams.get('title') || '');
   const { products, loading, error, refetch } = useFetchProducts();
 
+  const {
+    activeFilters,
+    minPrice,
+    maxPrice,
+    selectedCondition,
+    sortBy,
+    showFilters,
+    showSortOptions,
+    setMinPrice,
+    setMaxPrice,
+    setSelectedCondition,
+    setSortBy,
+    setShowFilters,
+    setShowSortOptions,
+    addFilter,
+    removeFilter,
+    clearAllFilters,
+    sortProducts,
+    hasActiveFilters,
+    getSortText,
+  } = useProductFilters({
+    onFiltersChange: (filters) => {
+      if (searchTerm) {
+        filters.title = searchTerm;
+      }
+      refetch(filters);
+    }
+  });
+
   useEffect(() => {
     const title = searchParams.get('title') || '';
     setSearchTerm(title);
   }, [searchParams]);
-
-  const handleSearch = (value: string) => {
-    if (value.trim()) {
-      refetch({ title: value.trim() });
-    } else {
-      refetch({});
-    }
-  };
 
   if (error) {
     return (
@@ -42,7 +67,9 @@ export default function ProductsLists() {
   }
 
   const buildProducts = () => {
-    if (products.length === 0) {
+    const sortedProducts = sortProducts(products);
+
+    if (sortedProducts.length === 0) {
       return (
         <div className="col-span-full text-center py-16">
           <div className="text-gray-400 mb-4">
@@ -54,7 +81,7 @@ export default function ProductsLists() {
       );
     }
 
-    return products.map((prod) => (
+    return sortedProducts.map((prod) => (
       <ProductCard key={prod.id} product={prod} />
     ));
   };
@@ -83,33 +110,180 @@ export default function ProductsLists() {
                 placeholder="Buscar produtos, marcas, categorias..."
                 value={searchTerm}
                 onChange={setSearchTerm}
-                onSearch={handleSearch}
               />
             </div>
             <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex items-center gap-2"
+                onClick={() => setShowFilters(!showFilters)}
+              >
                 <Filter className="h-4 w-4" />
                 Filtros
+                {hasActiveFilters() && (
+                  <Badge variant="secondary" className="ml-1 h-5 w-5 p-0 text-xs">
+                    {activeFilters.length}
+                  </Badge>
+                )}
               </Button>
-              <Button variant="outline" size="sm" className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex items-center gap-2"
+                onClick={() => setShowSortOptions(!showSortOptions)}
+              >
                 <Grid3X3 className="h-4 w-4" />
-                Ordenar
+                Ordenar: {getSortText()}
               </Button>
             </div>
           </div>
 
+          {showSortOptions && (
+            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => {
+                    setSortBy('relevance');
+                    setShowSortOptions(false);
+                  }}
+                  className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                    sortBy === 'relevance' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Relevância
+                </button>
+                <button
+                  onClick={() => {
+                    setSortBy('price_asc');
+                    setShowSortOptions(false);
+                  }}
+                  className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                    sortBy === 'price_asc' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Menor Preço
+                </button>
+                <button
+                  onClick={() => {
+                    setSortBy('price_desc');
+                    setShowSortOptions(false);
+                  }}
+                  className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                    sortBy === 'price_desc' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Maior Preço
+                </button>
+                <button
+                  onClick={() => {
+                    setSortBy('rating');
+                    setShowSortOptions(false);
+                  }}
+                  className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                    sortBy === 'rating' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  Melhor Avaliação
+                </button>
+              </div>
+            </div>
+          )}
+
+          {showFilters && (
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-gray-700">Faixa de Preço</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      type="number"
+                      placeholder="Min"
+                      value={minPrice}
+                      onChange={(e) => setMinPrice(e.target.value)}
+                      className="flex-1"
+                    />
+                    <Input
+                      type="number"
+                      placeholder="Max"
+                      value={maxPrice}
+                      onChange={(e) => setMaxPrice(e.target.value)}
+                      className="flex-1"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-gray-700">Condição</Label>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="w-full justify-between">
+                        {selectedCondition ? selectedCondition : "Todas as condições"}
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent >
+                      <DropdownMenuItem onClick={() => setSelectedCondition("")}>
+                        Todas as condições
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setSelectedCondition("NEW")}>
+                        Novo
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setSelectedCondition("PREMIUM")}>
+                        Premium
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setSelectedCondition("REFURBISHED")}>
+                        Reformado
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setSelectedCondition("USED")}>
+                        Usado
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setSelectedCondition("DAMAGED")}>
+                        Danificado
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
+                <div className="flex items-end">
+                  <Button
+                    variant="outline"
+                    onClick={clearAllFilters}
+                    className=" flex items-center gap-2"
+                    disabled={!hasActiveFilters() && !searchTerm}
+                  >
+                    <X className="h-4 w-4" />
+                    Limpar Filtros
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="flex flex-wrap gap-2 mt-4">
-            <Badge variant="secondary" className="cursor-pointer hover:bg-blue-100 transition-colors">
+            <Badge 
+              variant={!hasActiveFilters() && !searchTerm ? "default" : "secondary"} 
+              className="cursor-pointer transition-colors"
+              onClick={() => {
+                clearAllFilters();
+                setSearchTerm('');
+              }}
+            >
               Todos os produtos
             </Badge>
-            <Badge variant="outline" className="cursor-pointer hover:bg-gray-100 transition-colors">
+            <Badge 
+              variant={activeFilters.includes('novidades') ? "default" : "secondary"} 
+              className="cursor-pointer hover:bg-blue-100 transition-colors"
+              onClick={() => activeFilters.includes('novidades') ? removeFilter('novidades') : addFilter('novidades')}
+            >
               Novidades
             </Badge>
-            <Badge variant="outline" className="cursor-pointer hover:bg-gray-100 transition-colors">
-              Ofertas
-            </Badge>
-            <Badge variant="outline" className="cursor-pointer hover:bg-gray-100 transition-colors">
-              Mais vendidos
+            <Badge 
+              variant={activeFilters.includes('estoque') ? "default" : "secondary"} 
+              className="cursor-pointer hover:bg-blue-100 transition-colors"
+              onClick={() => activeFilters.includes('estoque') ? removeFilter('estoque') : addFilter('estoque')}
+            >
+              Em Estoque
             </Badge>
           </div>
         </div>
