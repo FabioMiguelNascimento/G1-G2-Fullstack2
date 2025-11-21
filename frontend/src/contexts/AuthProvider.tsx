@@ -47,7 +47,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 
     const registerHandler = async (data: { email: string; password: string; name: string }): Promise<{ user: User | null, message: string }> => {
-        return await register(data);
+        const result = await register(data);
+        
+        if (result.user) {
+            setUser(result.user);
+            localStorage.setItem('user', JSON.stringify(result.user));
+            
+            const profileResult = await profile();
+            if (profileResult.user) {
+                setUser(profileResult.user);
+                localStorage.setItem('user', JSON.stringify(profileResult.user));
+            }
+        }
+        
+        return result;
     };
 
     const logoutHandler = async () => {

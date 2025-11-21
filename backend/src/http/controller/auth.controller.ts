@@ -24,7 +24,27 @@ export default class AuthController{
 
             let newUser = await repo.register(userInput)
 
-            res.status(200).json( new AuthResponse().register(newUser) )
+            const tokenPayload = { id: newUser.id, role: newUser.role }
+            const accessToken = signToken(tokenPayload)
+            const refreshToken = signRefreshToken({ id: newUser.id })
+
+            await repo.updateRefreshToken(newUser.id, refreshToken)
+
+            res.cookie('token', accessToken, { 
+                httpOnly: true, 
+                secure: process.env.NODE_ENV === 'production', 
+                sameSite: 'strict',
+                maxAge: 15 * 60 * 1000
+            });
+            
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            });
+
+            res.status(201).json( new AuthResponse().register(newUser) )
         } catch (err) {
             next(err)
         }

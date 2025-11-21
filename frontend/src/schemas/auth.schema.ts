@@ -31,16 +31,30 @@ export const optionalPasswordSchema = z.string()
     return /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
 }, { message: "A senha deve conter pelo menos um caractere especial" });
 
-export const registerSchema = z.object({
-    name: z.string().min(1, "Nome e obrigatorio"),
-    email: z.email("Email e obrigatorio"),
-    password: passwordSchema
+export const registerWithConfirmSchema = z.object({
+    name: z.string()
+        .min(2, "Nome deve ter pelo menos 2 caracteres")
+        .max(50, "Nome deve ter no máximo 50 caracteres"),
+    email: z.string()
+        .email("Email inválido"),
+    password: z.string()
+        .min(6, "Senha deve ter pelo menos 6 caracteres")
+        .max(100, "Senha deve ter no máximo 100 caracteres")
+        .regex(/[a-z]/, "Senha deve conter pelo menos uma letra minúscula")
+        .regex(/[A-Z]/, "Senha deve conter pelo menos uma letra maiúscula")
+        .regex(/\d/, "Senha deve conter pelo menos um número"),
+    confirmPassword: z.string()
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Senhas não coincidem",
+    path: ["confirmPassword"]
 })
 
 export const loginSchema = z.object({
-    email: z.email("Email e obrigatorio"),
-    password: passwordSchema
+    email: z.string()
+        .email("Email inválido"),
+    password: z.string()
+        .min(1, "Senha é obrigatória")
 })
 
-export type RegisterInput = z.infer<typeof registerSchema>
+export type RegisterWithConfirmInput = z.infer<typeof registerWithConfirmSchema>
 export type LoginInput = z.infer<typeof loginSchema>

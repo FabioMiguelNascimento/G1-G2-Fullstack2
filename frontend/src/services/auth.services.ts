@@ -12,15 +12,15 @@ interface RegisterRequest {
     name: string,
 }
 
-interface LoginResponse {
+interface AuthResponse {
     code: number;
     message: string;
     data: User
 }
 
-export const login = async ( data : LoginRequest ): Promise<LoginResponse['data'] | null> => {
+export const login = async ( data : LoginRequest ): Promise<AuthResponse['data'] | null> => {
     try {
-        const response = await api.post<LoginResponse>('/auth/login', data);
+        const response = await api.post<AuthResponse>('/auth/login', data);
 
         if (response.status >= 200 && response.status < 300) {
             return response.data.data;
@@ -36,9 +36,7 @@ export const login = async ( data : LoginRequest ): Promise<LoginResponse['data'
 
 export const register = async ( data : RegisterRequest ): Promise<{ user: User | null, message: string }> => {
     try {
-        console.log('Attempting register with:', data);
-        const response = await api.post<LoginResponse>('/auth/register', data);
-        console.log('Register response:', response);
+        const response = await api.post<AuthResponse>('/auth/register', data);
 
         if (response.status >= 200 && response.status < 300) {
             return { user: response.data.data, message: '' };
