@@ -349,7 +349,7 @@ export default function Product() {
                 <div className="flex gap-2">
                   {buildStars(product)}{" "}
                   <span className="text-muted-foreground">
-                    ({product.rating})
+                    ({product.rating?.toFixed(2)})
                   </span>
                 </div>
               </div>
