@@ -4,7 +4,9 @@ import express, { json } from 'express';
 import { errorHandler, requestNotFound } from './error/errorHandler.js';
 import authRoute from './http/route/auth.route.js';
 import cartRoute from './http/route/cart.route.js';
+import checkoutRoute from './http/route/checkout.route.js';
 import dashboardRoute from './http/route/dashboard.route.js';
+import orderRoute from './http/route/order.route.js';
 import productRoute from './http/route/product.route.js';
 import supplierRoute from './http/route/supplier.route.js';
 import userRoute from './http/route/user.route.js';
@@ -26,6 +28,8 @@ app.use('/api/auth', authRoute)
 app.use('/api/user', userRoute)
 app.use('/api/product', productRoute)
 app.use('/api/cart', cartRoute)
+app.use('/api/checkout', checkoutRoute)
+app.use('/api/order', orderRoute)
 app.use('/api/supplier', supplierRoute)
 app.use('/api/dashboard', dashboardRoute)
 

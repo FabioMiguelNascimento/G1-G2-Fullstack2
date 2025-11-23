@@ -40,7 +40,7 @@ export default function UserDropdownMenu() {
                     </Link>
                 </DropdownMenuItem> */}
                 <DropdownMenuItem asChild className="cursor-pointer">
-                    <Link to="/account/orders">
+                    <Link to={`/account/${user.id}/orders`}>
                         <Package className="mr-2 h-4 w-4" />
                         Meus pedidos
                     </Link>

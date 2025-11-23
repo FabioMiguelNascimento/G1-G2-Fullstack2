@@ -18,6 +18,13 @@ interface DashboardStats {
         stock: number;
         price: number;
     }[];
+    recentOrders: {
+        id: string;
+        customer: string;
+        date: string;
+        total: number;
+        status: string;
+    }[];
 }
 
 export default function Dashboard() {
@@ -126,33 +133,66 @@ export default function Dashboard() {
                 </Card>
             </div>
 
-            {stats?.lowStockProducts && stats.lowStockProducts.length > 0 && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Alerta de Estoque Baixo</CardTitle>
-                        <CardDescription>
-                            Produtos que precisam de reposição urgente
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            {stats.lowStockProducts.map((product) => (
-                                <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
-                                    <div>
-                                        <h4 className="font-medium">{product.title}</h4>
-                                        <p className="text-sm text-muted-foreground">
-                                            R$ {product.price.toFixed(2)}
-                                        </p>
+            <div className="grid gap-4 md:grid-cols-2">
+                {stats?.lowStockProducts && stats.lowStockProducts.length > 0 && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Alerta de Estoque Baixo</CardTitle>
+                            <CardDescription>
+                                Produtos que precisam de reposição urgente
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-4">
+                                {stats.lowStockProducts.map((product) => (
+                                    <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
+                                        <div>
+                                            <h4 className="font-medium">{product.title}</h4>
+                                            <p className="text-sm text-muted-foreground">
+                                                R$ {product.price.toFixed(2)}
+                                            </p>
+                                        </div>
+                                        <Badge variant={product.stock === 0 ? "destructive" : "secondary"}>
+                                            {product.stock} em estoque
+                                        </Badge>
                                     </div>
-                                    <Badge variant={product.stock === 0 ? "destructive" : "secondary"}>
-                                        {product.stock} em estoque
-                                    </Badge>
-                                </div>
-                            ))}
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
+
+                {stats?.recentOrders && stats.recentOrders.length > 0 && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Pedidos Recentes</CardTitle>
+                            <CardDescription>
+                                Últimos pedidos realizados na loja
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-4">
+                                {stats.recentOrders.map((order) => (
+                                    <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
+                                        <div>
+                                            <h4 className="font-medium">{order.customer}</h4>
+                                            <p className="text-sm text-muted-foreground">
+                                                {new Date(order.date).toLocaleDateString('pt-BR')}
+                                            </p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="font-bold">R$ {order.total.toFixed(2)}</p>
+                                            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                                {order.status}
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
+            </div>
         </div>
     );
 }

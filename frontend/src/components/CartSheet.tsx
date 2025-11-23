@@ -13,6 +13,7 @@ import useCartActions from "@/hooks/useCartActions";
 import useFetchUserCart from "@/hooks/useFetchUserCart";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import ConfirmDialog from "./ConfirmDialog";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
@@ -23,7 +24,6 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { Link } from "react-router-dom";
 
 export default function CartSheet() {
   const { user } = useAuthContext();
@@ -208,7 +208,7 @@ export default function CartSheet() {
               className="cursor-pointer"
               disabled={!hasItems || actionLoading}
             >
-              <Link to={'/payment'}>Comprar</Link>
+              <Link to={`/account/${user?.id}/cart`}>Comprar</Link>
             </Button>
           </SheetFooter>
         </SheetContent>

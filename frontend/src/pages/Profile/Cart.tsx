@@ -1,24 +1,26 @@
 
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import useAuthContext from '@/hooks/useAthContext';
 import useCartActions from '@/hooks/useCartActions';
+import useCheckout from '@/hooks/useCheckout';
 import useFetchUserCart from '@/hooks/useFetchUserCart';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // Tipo para o item do carrinho baseado na estrutura real
 interface CartProduct {
@@ -41,11 +43,19 @@ interface Cart {
 
 export default function Cart() {
   const { user } = useAuthContext();
-  const { cart, loading, error } = useFetchUserCart(user?.id || null);
+  const [cartTrigger, setCartTrigger] = useState(0);
+  const { cart, loading, error } = useFetchUserCart(user?.id || null, cartTrigger);
   const { updateQuantity, removeFromCart, loading: actionLoading } = useCartActions();
+  const { checkout, loading: checkoutLoading, error: checkoutError } = useCheckout();
+  const navigate = useNavigate();
 
   // Estado local para o carrinho (para atualização em tempo real)
   const [localCart, setLocalCart] = useState<Cart | null>(null);
+
+  // Estados para o modal de checkout
+  const [checkoutPassword, setCheckoutPassword] = useState('');
+  const [checkoutModalOpen, setCheckoutModalOpen] = useState(false);
+  const [checkoutSuccess, setCheckoutSuccess] = useState<any>(null);
 
   // Fazer cast do tipo para a estrutura real
   const cartData = cart as unknown as Cart | null;
@@ -96,6 +106,23 @@ export default function Cart() {
       products: updatedProducts,
       totalCart: newTotalCart
     });
+  };
+
+  // Função para lidar com o checkout
+  const handleCheckout = async () => {
+    if (!checkoutPassword.trim()) {
+      return;
+    }
+
+    const result = await checkout(checkoutPassword);
+
+    if (result) {
+      setCheckoutSuccess(result.data);
+      setLocalCart({ products: [], totalCart: 0 }); // Limpar carrinho local
+      setCartTrigger(prev => prev + 1); // Forçar recarregamento do carrinho
+      setCheckoutPassword("");
+      setCheckoutModalOpen(false);
+    }
   };
 
   // Se o usuário não estiver logado
@@ -342,9 +369,55 @@ export default function Cart() {
                   <span>R$ {total.toFixed(2)}</span>
                 </div>
               </div>
-              <Button className="w-full" size="lg">
-                Finalizar Compra
-              </Button>
+              <AlertDialog open={checkoutModalOpen} onOpenChange={setCheckoutModalOpen}>
+                <AlertDialogTrigger asChild>
+                  <Button className="w-full" size="lg" disabled={items.length === 0}>
+                    Finalizar Compra
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Finalizar Compra</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Digite sua senha para confirmar a compra de{" "}
+                      {itemsCount} {itemsCount === 1 ? "item" : "itens"}{" "}
+                      no valor total de R$ {total.toFixed(2)}.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <div className="py-4">
+                    <Label htmlFor="checkout-password">Senha</Label>
+                    <Input
+                      id="checkout-password"
+                      type="password"
+                      value={checkoutPassword}
+                      onChange={(e) => setCheckoutPassword(e.target.value)}
+                      placeholder="Digite sua senha"
+                      className="mt-2"
+                    />
+                    {checkoutError && (
+                      <p className="text-red-600 text-sm mt-2">
+                        {checkoutError}
+                      </p>
+                    )}
+                  </div>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel
+                      onClick={() => {
+                        setCheckoutPassword("");
+                        setCheckoutModalOpen(false);
+                      }}
+                    >
+                      Cancelar
+                    </AlertDialogCancel>
+                    <Button
+                      onClick={handleCheckout}
+                      disabled={checkoutLoading || !checkoutPassword.trim()}
+                    >
+                      {checkoutLoading ? "Processando..." : "Confirmar Compra"}
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
               <Link to="/products">
               <Button 
                 variant="outline" 
@@ -357,6 +430,52 @@ export default function Cart() {
           </Card>
         </div>
       </div>
+
+      {/* Modal de Sucesso */}
+      <AlertDialog open={!!checkoutSuccess} onOpenChange={() => setCheckoutSuccess(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Compra Realizada com Sucesso! 🎉</AlertDialogTitle>
+            <AlertDialogDescription>
+              Seu pedido foi criado com sucesso. Você pode acompanhar seus pedidos na seção "Meus Pedidos".
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="py-4">
+            <div className="space-y-2 text-sm">
+              <p>
+                <strong>ID do Pedido:</strong>{" "}
+                {checkoutSuccess?.orderId}
+              </p>
+              <p>
+                <strong>Data:</strong>{" "}
+                {checkoutSuccess
+                  ? new Date(checkoutSuccess.createdAt).toLocaleString("pt-BR")
+                  : ""}
+              </p>
+              <p>
+                <strong>Produtos:</strong>{" "}
+                {checkoutSuccess?.productsCount}
+              </p>
+            </div>
+          </div>
+          <AlertDialogFooter className="flex gap-2">
+            <AlertDialogAction
+              onClick={() => {
+                setCheckoutSuccess(null);
+                navigate("/account/orders");
+              }}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              Ver Meus Pedidos
+            </AlertDialogAction>
+            <AlertDialogAction
+              onClick={() => setCheckoutSuccess(null)}
+            >
+              Continuar Comprando
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

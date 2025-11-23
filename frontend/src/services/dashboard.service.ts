@@ -14,6 +14,13 @@ interface DashboardStats {
         stock: number;
         price: number;
     }[];
+    recentOrders: {
+        id: string;
+        customer: string;
+        date: string;
+        total: number;
+        status: string;
+    }[];
 }
 
 interface DashboardResponse {

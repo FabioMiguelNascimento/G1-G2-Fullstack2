@@ -31,7 +31,7 @@ const buildNavMain = (user: User | null) => [
   },
   {
     title: "Pedidos",
-    url: "/account/orders",
+    url: user ? `/account/${user.id}/orders` : "/account/orders",
     icon: Package,
   },
 ];

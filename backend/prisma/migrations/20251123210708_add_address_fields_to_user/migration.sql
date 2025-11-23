@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN "cep" TEXT;
+ALTER TABLE "User" ADD COLUMN "city" TEXT;
+ALTER TABLE "User" ADD COLUMN "complement" TEXT;
+ALTER TABLE "User" ADD COLUMN "district" TEXT;
+ALTER TABLE "User" ADD COLUMN "number" TEXT;
+ALTER TABLE "User" ADD COLUMN "state" TEXT;
+ALTER TABLE "User" ADD COLUMN "street" TEXT;

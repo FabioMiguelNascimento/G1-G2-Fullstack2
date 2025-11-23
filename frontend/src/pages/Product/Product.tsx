@@ -10,6 +10,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useCartContext } from "@/contexts/CartContext";
+import useAddToCart from "@/hooks/useAddToCart";
 import useFetchProduct from "@/hooks/useFetchProduct";
 import buildPrice from "@/utils/buildPrice";
 import buildStars from "@/utils/buildStars";
@@ -18,34 +20,15 @@ import {
   BadgeCheckIcon,
   CheckCircle,
   Codesandbox,
-  Heart,
   HeartCrack,
   RefreshCw,
-  Share,
   ShieldCheck,
   Star,
   TextIcon,
-  Truck,
+  Truck
 } from "lucide-react";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { useCartContext } from "@/contexts/CartContext";
-import useAddToCart from "@/hooks/useAddToCart";
-import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { useParams } from "react-router-dom";
 
 const tagIconMap: Record<string, any> = {
   destaque: BadgeCheckIcon,
@@ -165,45 +148,6 @@ export default function Product() {
   const { product, loading } = useFetchProduct(id ?? null);
   const { addToCart, loading: loadingCart } = useAddToCart();
   const { refetchCart } = useCartContext();
-
-  const formSchema = z.object({
-    cep: z.string().min(8, {
-      message: "CEP deve conter 8 números.",
-    }),
-    district: z.string().optional(),
-    city: z.string().optional(),
-    street: z.string().optional(),
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      cep: "",
-      district: "",
-      city: "",
-      street: "",
-    },
-  });
-
-  const redirect = useNavigate();
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const response = await axios.get(
-      `https://viacep.com.br/ws/${values.cep}/json/`
-    );
-
-    form.setValue("district", response.data.bairro || values.district);
-    form.setValue("city", response.data.localidade || values.city);
-    form.setValue("street", response.data.logradouro || values.street);
-
-    console.log(values);
-
-    const valuesExists = values.cep && values.city && values.district && values.street
-
-   if (valuesExists) {
-      redirect("/payment");
-    } 
-  }
 
   if (loading) {
     return <ProductSkeleton />;
@@ -427,124 +371,8 @@ export default function Product() {
               </div>
 
               <div className="flex gap-4 flex-col">
-                <div className="flex gap-2">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        className="grow-1 shrink-0 font-bold"
-                        size="lg"
-                        disabled={!product.inStock}
-                      >
-                        {product.inStock ? "Comprar Agora" : "Indisponível"}
-                      </Button>
-                    </DialogTrigger>
-
-                    <DialogContent>
-                      <h2 className="font-semibold">
-                        Para onde iremos enviar?
-                      </h2>
-
-                      <div className="space-y-2">
-                        <Form {...form}>
-                          <form
-                            onSubmit={form.handleSubmit(onSubmit)}
-                            className="space-y-8"
-                          >
-                            <FormField
-                              control={form.control}
-                              name="cep"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>CEP</FormLabel>
-                                  <FormControl>
-                                    <Input placeholder="64071-790" {...field} />
-                                  </FormControl>
-                                  <FormDescription className="text-sm">
-                                    {" "}
-                                    Através de seu CEP iremos buscar seu
-                                    endereço.
-                                  </FormDescription>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <div className="space-y-2">
-                              <FormField
-                                control={form.control}
-                                name="district"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Bairro</FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        placeholder="Digite seu bairro."
-                                        {...field}
-                                      />
-                                    </FormControl>
-                                    <FormDescription className="text-xs">
-                                      Certifique-se que seu bairro está correto.
-                                    </FormDescription>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={form.control}
-                                name="city"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Cidade</FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        placeholder="Digite sua cidade"
-                                        {...field}
-                                      />
-                                    </FormControl>
-                                    <FormDescription className="text-xs">
-                                      Certifique-se que sua cidade está correta.
-                                    </FormDescription>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={form.control}
-                                name="street"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Rua</FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        placeholder="Digite sua rua."
-                                        {...field}
-                                      />
-                                    </FormControl>
-                                    <FormDescription className="text-xs">
-                                      Certifique-se que sua rua está correta.
-                                    </FormDescription>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                            </div>
-                            <Button type="submit" className="cursor-pointer">
-                              Continuar
-                            </Button>
-                          </form>
-                        </Form>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                  <Button className="" variant="outline">
-                    <Heart />
-                  </Button>
-                  <Button className="" variant="outline">
-                    <Share />
-                  </Button>
-                </div>
                 <Button
-                  className=" font-bold"
-                  variant="outline"
+                  className="font-bold bg-blue-600 hover:bg-blue-700 text-white"
                   size="lg"
                   onClick={async () => {
                     const success = await addToCart(product.id, quantity);

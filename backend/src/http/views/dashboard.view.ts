@@ -12,6 +12,13 @@ export interface DashboardStats {
         stock: number;
         price: number;
     }[];
+    recentOrders: {
+        id: string;
+        customer: string;
+        date: Date;
+        total: number;
+        status: string;
+    }[];
 }
 
 export default class DashboardResponse {

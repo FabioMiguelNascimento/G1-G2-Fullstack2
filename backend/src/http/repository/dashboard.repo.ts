@@ -8,7 +8,7 @@ export default class DashboardRepository {
         const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
         const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
 
-        const totalSales = await prisma.productInCart.aggregate({
+        const totalSales = await prisma.productInOrder.aggregate({
             _sum: {
                 quantity: true,
             },
@@ -20,7 +20,7 @@ export default class DashboardRepository {
             },
         });
 
-        const bestSellingProduct = await prisma.productInCart.groupBy({
+        const bestSellingProduct = await prisma.productInOrder.groupBy({
             by: ['productId'],
             _sum: {
                 quantity: true,
@@ -73,10 +73,37 @@ export default class DashboardRepository {
             take: 10,
         });
 
+        const recentOrders = await prisma.order.findMany({
+            take: 5,
+            orderBy: {
+                createdAt: 'desc',
+            },
+            include: {
+                user: {
+                    select: {
+                        name: true,
+                        email: true,
+                    },
+                },
+                product: {
+                    include: {
+                        product: true,
+                    }
+                }
+            },
+        });
+
         return {
             totalSales: totalSales._sum?.quantity || 0,
             bestSellingProduct: bestProduct,
             lowStockProducts,
+            recentOrders: recentOrders.map(order => ({
+                id: order.id,
+                customer: order.user.name,
+                date: order.createdAt,
+                total: order.product.reduce((acc, item) => acc + (item.product.price * item.quantity), 0),
+                status: "Concluído" // Por enquanto hardcoded, já que não temos status no model Order
+            }))
         };
     }
 }
