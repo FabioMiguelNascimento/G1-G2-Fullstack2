@@ -5,7 +5,7 @@ import prisma from "db/prisma.js";
 import ICheckout from "../interface/checkout.interface.js";
 
 export default class CheckoutRepository implements ICheckout {
-    async checkout(userId: string, password: string): Promise<Order | null> {
+    async checkout(userId: string, password: string): Promise<Order & { product?: any[] }> {
         // Buscar usuário com carrinho
         const user = await prisma.user.findUnique({
             where: { id: userId },
