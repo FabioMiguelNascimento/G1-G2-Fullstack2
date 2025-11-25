@@ -272,13 +272,6 @@ export default function ProductsLists() {
               Todos os produtos
             </Badge>
             <Badge 
-              variant={activeFilters.includes('novidades') ? "default" : "secondary"} 
-              className="cursor-pointer hover:bg-blue-100 transition-colors"
-              onClick={() => activeFilters.includes('novidades') ? removeFilter('novidades') : addFilter('novidades')}
-            >
-              Novidades
-            </Badge>
-            <Badge 
               variant={activeFilters.includes('estoque') ? "default" : "secondary"} 
               className="cursor-pointer hover:bg-blue-100 transition-colors"
               onClick={() => activeFilters.includes('estoque') ? removeFilter('estoque') : addFilter('estoque')}
