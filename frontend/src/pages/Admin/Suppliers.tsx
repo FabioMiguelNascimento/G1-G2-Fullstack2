@@ -18,8 +18,8 @@ import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { useFetchSuppliers } from "@/hooks/useFetchSuppliers";
 import { useSupplierMutations } from "@/hooks/useSupplierMutations";
 import type { Supplier } from "@/schemas/supplier.schema";
-import { Eye, Trash } from "lucide-react";
-import { useMemo, useState } from "react";
+import { Copy, Eye, Trash } from "lucide-react";
+import { useMemo, useState, type MouseEvent } from "react";
 import { toast } from "sonner";
 
 export default function Suppliers() {
@@ -98,8 +98,40 @@ export default function Suppliers() {
         setProductsModalOpen(true);
     };
 
+    const handleCopySupplierId = async (event: MouseEvent<HTMLButtonElement>, supplierId: string) => {
+        event.stopPropagation();
+
+        const clipboard = navigator.clipboard;
+
+        if (!clipboard) {
+            toast.error("Não foi possível acessar a área de transferência.");
+            return;
+        }
+
+        try {
+            await clipboard.writeText(supplierId);
+            toast.success("ID do fornecedor copiado!");
+        } catch (copyError) {
+            console.error(copyError);
+            toast.error("Erro ao copiar ID do fornecedor.");
+        }
+    };
+
     const columns: Column<Supplier>[] = [
-       { key: 'id', header: 'ID', shorten: 8 },
+       { key: 'id', header: 'ID', render: (_, item) => (
+        <div className="flex gap-2 items-center">
+            <span className="font-mono text-sm">{item.id.slice(0, 10)}</span>
+            <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={(event) => handleCopySupplierId(event, item.id)}
+                aria-label="Copiar ID do fornecedor"
+            >
+                <Copy size={14} />
+            </Button>
+        </div>
+       ) },
        { key: 'name', header: 'Nome' },
        { key: 'email', header: 'Email' },
        { key: 'phone', header: 'Telefone' },

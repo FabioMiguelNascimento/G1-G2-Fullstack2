@@ -28,6 +28,7 @@ export const createProductSchema = z.object({
   includes: z.array(z.object({ name: z.string(), value: z.string() })).optional(),
 
   tags: z.array(z.string()).optional(),
+  supplierId: z.string().optional(),
 })
 
 export type CreateProductInput = z.infer<typeof createProductSchema>

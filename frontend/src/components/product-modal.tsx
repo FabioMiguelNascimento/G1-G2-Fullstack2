@@ -41,6 +41,7 @@ export default function ProductModal({ open, onOpenChange, product, onSubmit }: 
         returnPolicy: product?.returnPolicy || "DAYS_30",
         includes: parseJsonField<{ name: string; value: string }[]>(product?.includes, []),
         tags: product?.tags || [],
+        supplierId: product?.supplierId ?? null
     }), [product]);
     
     const form = useForm<any>({
@@ -352,6 +353,19 @@ export default function ProductModal({ open, onOpenChange, product, onSubmit }: 
                                         <FormLabel className="font-bold">Inclui</FormLabel>
                                         <FormControl>
                                             <ArrayEditor value={field.value || []} onChange={field.onChange} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="supplierId"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="font-bold">Id do Fornecedor</FormLabel>
+                                        <FormControl>
+                                            <Input value={field.value || ""} onChange={field.onChange}/>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
